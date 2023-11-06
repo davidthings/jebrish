@@ -1,5 +1,12 @@
 #!/bin/sh
 
+echo "Running post-build.sh"
+echo "    TARGET_DIR: $TARGET_DIR"
+echo "    HOST_DIR: $HOST_DIR"
+echo "    BINARIES_DIR: $BINARIES_DIR"
+
+export -p
+
 linux_image()
 {
 	if grep -Eq "^BR2_LINUX_KERNEL_UIMAGE=y$" ${BR2_CONFIG}; then
@@ -29,6 +36,7 @@ install -d "$TARGET_DIR/boot/extlinux/"
 sed -e "$(generic_getty)" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
 	-e "s/%PARTUUID%/$PARTUUID/g" \
-	"board/orangepi/common/extlinux.conf" > "$TARGET_DIR/boot/extlinux/extlinux.conf"
+	"board/anbernic/rg353/extlinux.conf" > "$TARGET_DIR/boot/extlinux/extlinux.conf"
 
-sed "s/%PARTUUID%/$PARTUUID/g" "board/orangepi/common/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+sed "s/%PARTUUID%/$PARTUUID/g" "board/anbernic/rg353/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+
