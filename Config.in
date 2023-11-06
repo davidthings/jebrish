@@ -55,6 +55,16 @@ config BR2_HOST_GCC_AT_LEAST_9
 	default y if BR2_HOST_GCC_VERSION = "9"
 	select BR2_HOST_GCC_AT_LEAST_8
 
+config BR2_HOST_GCC_AT_LEAST_10
+	bool
+	default y if BR2_HOST_GCC_VERSION = "10"
+	select BR2_HOST_GCC_AT_LEAST_9
+
+config BR2_HOST_GCC_AT_LEAST_11
+	bool
+	default y if BR2_HOST_GCC_VERSION = "11"
+	select BR2_HOST_GCC_AT_LEAST_10
+
 # When adding new entries above, be sure to update
 # the HOSTCC_MAX_VERSION variable in the Makefile.
 
@@ -241,7 +251,7 @@ if !BR2_PRIMARY_SITE_ONLY
 
 config BR2_BACKUP_SITE
 	string "Backup download site"
-	default "http://sources.buildroot.net"
+	default "https://sources.buildroot.net"
 	help
 	  Backup site to download from. If this option is set then
 	  buildroot will fall back to download package sources from here

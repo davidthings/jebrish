@@ -18,6 +18,7 @@ MONIT_AUTORECONF = YES
 MONIT_CONF_ENV = \
 	libmonit_cv_setjmp_available=yes \
 	libmonit_cv_vsnprintf_c99_conformant=yes \
+	ax_cv_check_cflags___fstack_protector_all=$(if $(BR2_TOOLCHAIN_HAS_SSP),yes,no) \
 	ac_cv_ipv6=yes
 
 MONIT_CONF_OPTS += \
@@ -25,8 +26,9 @@ MONIT_CONF_OPTS += \
 	--with-largefiles
 
 ifeq ($(BR2_PACKAGE_OPENSSL),y)
+MONIT_CONF_ENV += LIBS=`$(PKG_CONFIG_HOST_BINARY) --libs openssl`
 MONIT_CONF_OPTS += --with-ssl --with-ssl-dir=$(STAGING_DIR)/usr
-MONIT_DEPENDENCIES += openssl
+MONIT_DEPENDENCIES += host-pkgconf openssl
 else
 MONIT_CONF_OPTS += --without-ssl
 endif

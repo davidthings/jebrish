@@ -124,8 +124,6 @@ boot/syslinux/0017-Replace-builtin-strlen-that-appears-to-get-optimized.patch Up
 linux/5.10.162-cip24-rt10/0001-arch-microblaze-mm-init.c-fix-build.patch Upstream
 package/18xx-ti-utils/0001-plt.h-fix-build-with-gcc-10.patch Upstream
 package/4th/0001-avoid-regen-during-install.patch Upstream
-package/ace/0001-ACE-ace-SSL-SSL_Asynch_BIO.cpp-fix-build-with-libres.patch Upstream
-package/ace/0002-ACE-ace-SSL-SSL_Asynch_BIO.cpp-fix-build-with-libres.patch Upstream
 package/acl/0001-Build-with-old-GCC-versions.patch Upstream
 package/acpid/0001-dont-use-isfdtype.patch Upstream
 package/alchemy/0001-toolchains-remove-hash-style-management.patch Upstream
@@ -219,7 +217,6 @@ package/botan/0002-src-build-data-arch-superh.txt-add-sh4-eb-aeb.patch Upstream
 package/brickd/S70brickd Indent Shellcheck Variables
 package/bridge-utils/0001-fix-build-on-musl.patch Upstream
 package/brltty/0001-Fix-linking-error-on-mips64el.patch Upstream
-package/brltty/0002-shell-prologue-runProgramTerminationCommands-used-a-.patch Upstream
 package/brltty/S10brltty Indent Shellcheck Variables
 package/bsdiff/0001-Add-missing-header-for-u_char.patch Upstream
 package/bustle/0001-Makefile-fix-pcap-config-call.patch Upstream
@@ -238,7 +235,6 @@ package/c-icap/0001-Required-fixes-to-compile-and-run-under-cygwin.patch Upstrea
 package/c-icap/S96cicap Indent Shellcheck Variables
 package/ca-certificates/0001-mozilla-certdata2pem.py-make-cryptography-module-opt.patch Upstream
 package/cache-calibrator/0001-Fix-conflicting-round-function.patch Upstream
-package/cage/0001-Upgrade-to-wlroots-0.15.patch Upstream
 package/cairo/0001-fix-nofork-build.patch Upstream
 package/cairo/0002-ft-Use-FT_Done_MM_Var-instead-of-free-when-available-in-cairo_ft_apply_variation.patch Upstream
 package/cairo/0003-_arc_max_angle_for_tolerance_normalized-fix-infinite.patch Upstream
@@ -576,10 +572,7 @@ package/ifupdown-scripts/nfs_check Shellcheck
 package/ifupdown/0001-archcommon-define-GNU-only-FNM_EXTMATCH-to-zero-on-n.patch Upstream
 package/ifupdown/0001-dont-use-dpkg-architecture.patch Upstream
 package/igd2-for-linux/S99upnpd Indent Shellcheck Variables
-package/imx-mkimage/0001-Add-support-for-overriding-BL32-and-BL33-not-only-BL.patch Upstream
-package/imx-mkimage/0002-Add-LDFLAGS-to-link-step.patch Upstream
-package/imx-mkimage/0003-Add-unused-fake-version.patch Upstream
-package/imx-mkimage/0004-Add-support-for-overriding-BL31-BL32-and-BL33.patch Upstream
+package/imx-mkimage/0001-Add-unused-fake-version.patch Upstream
 package/inadyn/S70inadyn Indent NotExecutable
 package/initscripts/init.d/rcK ConsecutiveEmptyLines EmptyLastLine Shellcheck
 package/initscripts/init.d/rcS ConsecutiveEmptyLines EmptyLastLine Shellcheck
@@ -587,7 +580,6 @@ package/input-event-daemon/S99input-event-daemon ConsecutiveEmptyLines Indent Va
 package/intel-gmmlib/0001-Drop-hardening-related-flags.patch Upstream
 package/intel-mediasdk/0001-Don-t-force-fstack-protector.patch Upstream
 package/intltool/0001-perl-5.26-compatibility.patch Upstream
-package/iodine/0001-disable-systemd-and-selinux.patch Upstream
 package/iotop/0001-Fix-build-error-with-Python-3.patch Upstream
 package/iozone/0001-Add-new-targets-for-iozone.patch Upstream
 package/iperf/0001-fix-single-threaded-compile-breakage.patch Upstream
@@ -650,7 +642,6 @@ package/libdnet/0001-python-makefile.patch Upstream
 package/libdrm/0001-tests-meson.build-disable-nouveau-tests-for-static-b.patch Upstream
 package/libdvbcsa/0001-altivec-powerpc64.patch Upstream
 package/libeXosip2/0001-src-eXtl_dtls.c-fix-build-with-libressl-3.4.1.patch Upstream
-package/libebml/0001-include-appropriate-header-files-for-std-numeric_limits.patch Upstream
 package/libedit/0001-check-bsd-functions-in-libbsd.patch Upstream
 package/libevent/0001-Don-t-define-BIO_get_init-for-LibreSSL-3-5.patch Upstream
 package/libfcgi/0001-link-against-math.patch Upstream
@@ -671,7 +662,6 @@ package/libftdi1/0003-CMakeLists.txt-fix-static-build-with-libusb-and-lato.patch
 package/libfuse/0001-fix-aarch64-build.patch Upstream
 package/libfuse/0002-util-ulockmgr_server-c-conditionally-define-closefrom-fix-glibc-2-34.patch Upstream
 package/libgcrypt/0001-configure.ac-add-an-option-to-disable-tests.patch Upstream
-package/libgdiplus/0001-Build-unit-tests-only-when-enable-unit-tests-is-pass.patch Upstream
 package/libglfw/0001-Wayland-Remove-extra-cmake-modules-dependency.patch Upstream
 package/libglfw/0002-src-CMakeLists.txt-allow-override-of-wayland-pkgdata.patch Upstream
 package/libgpiod/0001-build-add-a-configure-switch-for-building-examples.patch Upstream
@@ -713,10 +703,8 @@ package/libmpeg2/0001-altivec.patch Upstream
 package/libmpeg2/0002-armv4l.patch Upstream
 package/libmpeg2/0003-fix-arm-detection.patch Upstream
 package/libmpeg2/0004-fix-sparc.patch Upstream
-package/libnet/0001-Use-standard-int64_t-instead-of-__int64_t-for-mingw-cross-build.patch Upstream
 package/libnetfilter_conntrack/0001-conntrack-fix-build-with-kernel-5-15-and-musl.patch Upstream
 package/libnfc/0001-autotools-make-example-build-optional.patch Upstream
-package/libnfs/0001-Fix-include-sys-time.h.patch Upstream
 package/libnids/0001-libpcap-use-pkg-config.patch Upstream
 package/libnl/0001-Add-musl-workaround-to-the-libc-compat.h-copy.patch Upstream
 package/libnss/0001-Bug-1801182-Allow-overriding-OS_ARCH-OS_TEST-and-OS_.patch Upstream
@@ -732,7 +720,6 @@ package/liboping/0003-Fix-compile-break-with-GCC-7-buffer-overflow-with-snprintf
 package/liboping/0004-Fix-compile-error-on-GCC-7.patch Upstream
 package/liboping/0005-src-oping.c-always-use-s-style-format-for-printf-sty.patch Upstream
 package/libp11/0001-src-p11_attr.c-fix-build-with-gcc-4.8.patch Upstream
-package/libpam-tacplus/0001-Add-an-option-to-disable-Werror.patch Upstream
 package/libplatform/0001-cmake-require-c-11-as-the-minimum-standard.patch Upstream
 package/libpng/0001-Disable-pngfix-and-png-fix-itxt.patch Upstream
 package/libpthsem/0001-fix-build-on-linux-3.x-host.patch Upstream
@@ -824,7 +811,6 @@ package/lshw/0001-solve-Compile-error-when-g-version-is-less-than-5.patch Upstre
 package/ltrace/0001-arm-plt.patch Upstream
 package/ltrace/0002-sparc-add-missing-library.h-include.patch Upstream
 package/ltrace/0003-configure.ac-fix-autoreconf-with-autoconf-2.70.patch Upstream
-package/ltris/0001-fix-build-with-gcc-4.8.patch Upstream
 package/lttng-babeltrace/0001-tests-lib-Makefile.am-remove-unneeded-static-flag.patch Upstream
 package/lttng-babeltrace/0002-configure.ac-fix-popt-static-build.patch Upstream
 package/lttng-libust/0001-configure.ac-add-disable-tests.patch Upstream
@@ -946,8 +932,6 @@ package/netsurf/0002-do-not-cross-compile-nsgenbind.patch Upstream
 package/netsurf/0003-fix-compilation-without-curl.patch Upstream
 package/netsurf/0004-framebuffer-Fix-internal-font-generated-source-for-GCC-10.patch Upstream
 package/nettle/0001-disable-testsuite-examples.patch Upstream
-package/network-manager/0001-build-meson-add-option-to-set-the-mobile-broadband-p.patch Upstream
-package/network-manager/0002-meson.build-fix-build-failure-with-Dmodem_manager-fa.patch Upstream
 package/network-manager/S45network-manager ConsecutiveEmptyLines EmptyLastLine Shellcheck Variables
 package/nfs-utils/S60nfs ConsecutiveEmptyLines Shellcheck Variables
 package/nginx-modsecurity/0001-config-use-pkg-config.patch Upstream
@@ -967,10 +951,10 @@ package/ngrep/0002-Check-for-libnet_init-in-configure-in.patch Upstream
 package/ngrep/0003-fix-disable-tcpkill.patch Upstream
 package/nilfs-utils/0001-nilfs_cleanerd-link-dynamically.patch Upstream
 package/nmap/0001-libdnet-wrapper-configure.patch Upstream
-package/nodejs/0001-add-qemu-wrapper-support.patch Upstream
-package/nodejs/0002-check-if-uclibc-has-backtrace-support.patch Upstream
-package/nodejs/0003-include-obj-name-in-shared-intermediate.patch Upstream
-package/nodejs/0004-lib-internal-modules-cjs-loader.js-adjust-default-pa.patch Upstream
+package/nodejs/nodejs-src/0001-add-qemu-wrapper-support.patch Upstream
+package/nodejs/nodejs-src/0002-check-if-uclibc-has-backtrace-support.patch Upstream
+package/nodejs/nodejs-src/0003-include-obj-name-in-shared-intermediate.patch Upstream
+package/nodejs/nodejs-src/0004-lib-internal-modules-cjs-loader.js-adjust-default-pa.patch Upstream
 package/nodm/S90nodm Indent Shellcheck Variables
 package/norm/0001-protolib-drop-linux-version-check.patch Upstream
 package/norm/0002-Use-print-as-function-call-for-Python3-compatibility.patch Upstream
@@ -982,7 +966,6 @@ package/ntp/S49ntp.in Variables
 package/ntpsec/0001-wscript-remove-checks-for-bsd-string.h-fixes-host-co.patch Upstream
 package/ntpsec/0002-wscript-fix-build-without-stack-protector.patch Upstream
 package/numactl/0001-link-with-latomic-if-needed-again.patch Upstream
-package/nut/0001-clients-upsclient-h-ensure-time_t-is-defined.patch Upstream
 package/nuttcp/0001-susv3-legacy.patch Upstream
 package/nvidia-driver/0001-use-LDFLAGS.patch Upstream
 package/octave/0001-Fix-BLAS-library-integer-size-detection.patch Upstream
@@ -1011,7 +994,7 @@ package/olsr/S50olsr Indent Shellcheck Variables
 package/omxplayer/0001-Update-Makefile-to-be-compatible-with-buildroot.patch Upstream
 package/open-plc-utils/0001-Remove-OWNER-and-GROUPS-parameters-to-install.patch Upstream
 package/open2300/0001-fix-makefile.patch Upstream
-package/openjdk/17.0.8+7/0001-Add-ARCv2-ISA-processors-support-to-Zero.patch Upstream
+package/openjdk/0001-Add-ARCv2-ISA-processors-support-to-Zero.patch Upstream
 package/openldap/0001-fix_cross_strip.patch Upstream
 package/openldap/0002-fix-bignum.patch Upstream
 package/openldap/0003-disable-docs.patch Upstream
@@ -1404,7 +1387,6 @@ package/uboot-tools/0003-tools-Makefile-fix-C-LD-FLAGS-with-CROSS_BUILD_TOOLS.pa
 package/ubus/0001-Install-server-and-client-examples.patch Upstream
 package/udpcast/0001-fix-musl-build.patch Upstream
 package/uemacs/01-clear-ixon-termios-flag.patch Upstream
-package/uftrace/0001-cmds-records-replace-ADDR_NO_RANDOMIZE-by-its-value.patch Upstream
 package/uhd/0001-host-CMakeLists-add-boost-unit_test_framework-requir.patch Upstream
 package/uhttpd/0001-Remove-Werror.patch Upstream
 package/uhttpd/0002-Fix-TCP_FASTOPEN-related-compile-error.patch Upstream
@@ -1545,8 +1527,6 @@ package/ympd/0002-added-forward-declarations.patch Upstream
 package/zabbix/0001-m4-netsnmp.m4-fix-shared-netsnmp-build.patch Upstream
 package/zabbix/0002-fix-build-with-libressl-3.5.0.patch Upstream
 package/zbar/0001-python-enum-fix-build-for-Python-3.11.patch Upstream
-package/zchunk/0001-meson-fix-argp-standalone-wrap-and-find_library.patch Upstream
-package/zchunk/0002-zck-declare-write_data-as-static.patch Upstream
 package/zic/0001-remove-dependency-check-on-version-file.patch Upstream
 package/zip/0001-configure-Remove-Check-C-compiler-type-optimization-.patch Upstream
 package/zip/0002-configure-Don-t-use-host-CPP.patch Upstream

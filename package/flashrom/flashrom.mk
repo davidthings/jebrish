@@ -4,11 +4,12 @@
 #
 ################################################################################
 
-FLASHROM_VERSION = 1.2.1
+FLASHROM_VERSION = 1.3.0
 FLASHROM_SOURCE = flashrom-v$(FLASHROM_VERSION).tar.bz2
 FLASHROM_SITE = https://download.flashrom.org/releases
 FLASHROM_LICENSE = GPL-2.0+
 FLASHROM_LICENSE_FILES = COPYING
+FLASHROM_MAKE_OPTS = WARNERROR=no
 
 ifeq ($(BR2_PACKAGE_LIBFTDI),y)
 FLASHROM_DEPENDENCIES += host-pkgconf libftdi
