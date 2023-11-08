@@ -31,12 +31,18 @@ generic_getty()
 
 PARTUUID="$($HOST_DIR/bin/uuidgen)"
 
-install -d "$TARGET_DIR/boot/extlinux/"
+install -d "$BINARIES_DIR/extlinux/"
+
+# Get the dtb's into the image dir somehow
+cp output/build/uboot-v2024.01-rc1/u-boot.dtb $BINARIES_DIR
+
+# cp output/build/u-boot/arch/arm/dts/rk3566-anbernic-rgxx3.dtb $BINARIES_DIR
+# cp output/build/linux/arch/arm64/boot/dts/rockchip/rk3566-anbernic*.dtb $BINARIES_DIR
 
 sed -e "$(generic_getty)" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
 	-e "s/%PARTUUID%/$PARTUUID/g" \
-	"board/anbernic/rg353/extlinux.conf" > "$TARGET_DIR/boot/extlinux/extlinux.conf"
+	"board/anbernic/rg353/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
 sed "s/%PARTUUID%/$PARTUUID/g" "board/anbernic/rg353/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
 
