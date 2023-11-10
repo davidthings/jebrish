@@ -14,7 +14,7 @@ echo "    BINARIES_DIR: $BINARIES_DIR"
 
 rm -rf "${GENIMAGE_TMP}"
 
-${HOST_DIR}/bin/genimage                           \
+${HOST_DIR}/bin/genimage           \
 	--rootpath "${TARGET_DIR}"     \
 	--tmppath "${GENIMAGE_TMP}"    \
 	--inputpath "${BINARIES_DIR}"  \

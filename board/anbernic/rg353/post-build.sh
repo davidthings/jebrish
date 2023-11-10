@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Running post-build.sh"
 echo "    TARGET_DIR: $TARGET_DIR"
@@ -32,9 +32,26 @@ generic_getty()
 PARTUUID="$($HOST_DIR/bin/uuidgen)"
 
 install -d "$BINARIES_DIR/extlinux/"
+install -d "$BINARIES_DIR/rockchip/"
 
 # Get the dtb's into the image dir somehow
-cp output/build/uboot-v2024.01-rc1/u-boot.dtb $BINARIES_DIR
+# cp output/build/uboot-v2024.01-rc1/u-boot.dtb $BINARIES_DIR
+
+DTB_SOURCE_DIR="output/build/linux-6.6/arch/arm64/boot/dts/rockchip"
+
+#DEVICE_DTB = ( "rk3566-anbernic-rg353ps" "rk3566-anbernic-rg353vs" "rk3566-anbernic-rg503" "rk3566-anbernic-rg353p" "rk3566-anbernic-rg353v" )
+
+DEVICE_DTB="rk3566-anbernic-rg353ps rk3566-anbernic-rg353vs rk3566-anbernic-rg503 rk3566-anbernic-rg353p rk3566-anbernic-rg353v" 
+
+DTB_OUTPUT_FILES=""
+
+for DTB in ${DEVICE_DTB} ; do 
+    echo "    Copying $DTB_SOURCE_DIR/${DTB}.dtb to $BINARIES_DIR/rockchip"
+    cp $DTB_SOURCE_DIR/${DTB}.dtb $BINARIES_DIR/rockchip 
+    DTB_OUTPUT_FILES+=" ,\\\"rockchip/${DTB}.dtb\\\" "
+done
+
+# KERNEL_MAKE_EXTRACMD=" $(for DTB in "${DEVICE_DTB[@]}"; do echo -n "rockchip/${DTB}.dtb "; done)"
 
 # cp output/build/u-boot/arch/arm/dts/rk3566-anbernic-rgxx3.dtb $BINARIES_DIR
 # cp output/build/linux/arch/arm64/boot/dts/rockchip/rk3566-anbernic*.dtb $BINARIES_DIR
@@ -44,5 +61,11 @@ sed -e "$(generic_getty)" \
 	-e "s/%PARTUUID%/$PARTUUID/g" \
 	"board/anbernic/rg353/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
-sed "s/%PARTUUID%/$PARTUUID/g" "board/anbernic/rg353/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+echo "    DTB_OUTPUT_FILES: $DTB_OUTPUT_FILES"
+
+sed -e "s/%PARTUUID%/$PARTUUID/g" \
+	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
+    -e "s|%DTBS%|$DTB_OUTPUT_FILES|g" \
+    "board/anbernic/rg353/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+
 
