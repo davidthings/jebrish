@@ -1,7 +1,6 @@
 ANBERNIC RG353x
 ===============
 
-
 Build:
 ======
   $ make anbernic_rg353_defconfig
