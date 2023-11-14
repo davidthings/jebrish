@@ -11,9 +11,9 @@ The purpose of this fork is to provide a dead simple way to build a minimal Linu
 
 # Branches
 
-**master** - this is the source BuildRoot branch
+**master** - this is the source BuildRoot branch.  It doesn't boot on the target devices.
 
-**minimal** - this branch is a minimal configuration - just enough to boot and log in
+**minimal** - this branch is a minimal configuration - just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
 # Building
 
@@ -34,9 +34,25 @@ sudo dd if=output/images/sdcard.img of=/dev/sdc bs=4MB ; sync
 
 # Running
 
+With the sd card in the first slot, power on.
+
+After a short period, the kernel will run a console.
+
+Depending on your kernel arguments (in the boot partion `/extlinux/extlinux.conf`), console appears over the UART (at 1,500,00 bps!) or on the LCD display / HDMI.  Whichever appears last on the line is the one the console runs on.  Obviously if you select the main display, you'll need a USB keyboard or similar.  Many work, and a small wireless keyboard is quite nice.
+
+This is the default: console runs on the display.
+
+```
+LABEL default
+  KERNEL /%LINUXIMAGE%
+  FDTDIR /
+  append root=PARTUUID=%PARTUUID% rootwait console=ttyS2,1500000 console=tty0 rootfstype=ext4 panic=10 loglevel=8 panic=20
+```
+
+The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.
+
 Log in with username `root` and password `1234`
 
-Depending on your kernel arguments, console appears on the UART or on the LCD display / HDMI.
 
 # Contents
 
@@ -49,9 +65,11 @@ The configuration will make a minimal system including:
 
 # Further Work
 
-New branches
+No doubt there are many things that could be done to improve this work.  Perhaps there are errors, or perhaps there are things that could be done to make the system more efficient.
 
-**min-display**
+Possible future new branches:
+
+**min-display** - minimal configuration with Weston-based display
 
 # Boot Log
 
