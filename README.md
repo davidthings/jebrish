@@ -19,6 +19,8 @@ But of course one can also work with JELOS directly!
 
 **minimal** - this branch is a minimal configuration - just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
+**min-fs** - minimal configuration extended with a large sd-based filesystem.  Uses `switch_root` in /init.
+
 **master** - this is the source BuildRoot branch.  It doesn't boot on the target devices.
 
 # Building
@@ -155,8 +157,6 @@ Possible future new branches:
 **min-display** - minimal configuration with Weston-based display
 
 **min-wireless** - minimal configuration with wireless networking
-
-**min-fs** - minimal configuration with a large sd-based filesystem
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
