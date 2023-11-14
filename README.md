@@ -70,7 +70,7 @@ Almost instantaneously, U-Boot SPL will run, then U-Boot proper.  If you're on t
 
 After another very short period (2s or so), the kernel will run a console - either on the display or over the UART.
 
-You should see kernel boot debug messages on the Dispay
+You should see kernel boot debug messages on the Display.  An example appears [below](#boot-log).
 
 Log in with username `root` and password `1234`
 
@@ -114,7 +114,7 @@ Supported events:
 
 # Tested Devices
 
-**Anbernic RK353M** - `minimal` branch works perfectly
+**Anbernic RK353M** - `minimal` branch works well.
 
 # Further Work
 
