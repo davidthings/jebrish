@@ -51,7 +51,7 @@ LABEL default
   append root=PARTUUID=%PARTUUID% rootwait console=ttyS2,1500000 console=tty0 rootfstype=ext4 panic=10 loglevel=8 panic=20
 ```
 
-The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.    `console=ttyS2,1500000` is the second `console` hence the default for the shell.
+The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.    `console=ttyS2,1500000` is the second `console` hence the default for the shell.  See the [UART](#uart) section below for more information.
 
 ```
 LABEL default
@@ -803,3 +803,24 @@ Starting kernel ...
 [    2.364592]     HOME=/
 [    2.366292]     TERM=linux
 ```
+
+# UART
+
+## RG353M 
+
+Here's the open device with UART wires attached
+
+![](readme_images/rg353m_uarted_innards.jpeg)
+
+Here's the closeup
+
+![](readme_images/rm353m_uart.jpeg)
+
+Wires
+- Orange: RX
+- Yellow: TX
+- Black: GND
+
+No VCC (3.3V or 5V) connection is required.
+
+Finding some way to secure the wires is recommended, since they will only take 4 or 5 flexes before they break.
