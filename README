@@ -53,7 +53,6 @@ The alternative is that the console runs over the UART.  For this option you'll 
 
 Log in with username `root` and password `1234`
 
-
 # Contents
 
 The configuration will make a minimal system including:
@@ -62,16 +61,23 @@ The configuration will make a minimal system including:
 - uboot (2024)
 - kernel (6.6)
 - busybox
+- shell
 
 # Further Work
 
-No doubt there are many things that could be done to improve this work.  Perhaps there are errors, or perhaps there are things that could be done to make the system more efficient.
+No doubt there are many things that could be done to improve this work.  Perhaps there are errors, or perhaps the system could be more efficient.
 
 Possible future new branches:
 
 **min-display** - minimal configuration with Weston-based display
 
+**min-wireless** - minimal configuration with wireless networking
+
+**min-fs** - minimal configuration with a large sd-based filesystem
+
 # Boot Log
+
+This is a sample boot log.
 
 ```
 DDR V1.18 f366f69a7d typ 23/07/17-15:48:58
