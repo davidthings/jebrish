@@ -116,6 +116,22 @@ Supported events:
   Event type 3 (EV_ABS)
 ```
 
+# Actual Work
+
+This site is a fork of BuildRoot.  It's almost entirely BuildRoot.  The only changes are in the `board/anbernic/rg353` directory, and the corresponding `configs/anbernic_rk3566_defconfig` file.
+
+In the board directory you'll find
+
+- `linux.config` - the JELOS mainline RK3566 kernel
+- `uboot.config` - a U-Boot config for the Anbernic RK3566 devices
+- `post-build.sh` - a script mainly to create the contents of the boot partition
+- `post-image.sh` - a script that runs `genimage` to create the sdcard.img file
+- `extlinux.conf` - the extlinux config file for the boot partition (including kernel arguments)
+- `genimage.cfg` - the layout of the sdcard.img file
+- `rgxx3-rk3566.c` - (unused) a version of the device specific uboot code that has a lot of debug output
+
+`anbernic_rk3566_defconfig` is the BuildRoot config file.  It points to all of the above, and sets some BuildRoot options.
+
 # Tested Devices
 
 **Anbernic RK353M** - `minimal` branch works well.
@@ -141,6 +157,8 @@ Possible future new branches:
 **min-wireless** - minimal configuration with wireless networking
 
 **min-fs** - minimal configuration with a large sd-based filesystem
+
+BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
 # Boot Log
 
