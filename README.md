@@ -7,7 +7,13 @@ This is a fork of the buildroot project with some settings / config for RK3566-b
 
 It uses the U-Boot and Kernel Config developed for JELOS.
 
-The purpose of this fork is to provide a dead simple way to build a minimal Linux system for the RK3566 expressly for the purpose of working with new devices that use this chip which might want to work with JELOS eventually.
+The purpose of this fork is to provide a dead simple way to build a minimal Linux system for the RK3566 expressly for the purpose of working with new devices that use this chip which might want to work with JELOS eventually.  
+
+It attempts to address the situation that applies to a developer who wishes to help with the lower-level parts of the OS, like U-Boot, Device Tree, and the Kernel, but who is not intimately familiar with Linux or Jelos.
+
+BuildRoot provides a compact and well understood environment in which to do this work, with the background knowledge required to be productive is perhaps already known to the developer.  Very importantly, both build and boots times are short.
+
+But of course one can also work with JELOS directly!
 
 # Branches
 
@@ -32,15 +38,11 @@ At the end of the process you should have a file `output/images/sdcard.img` whic
 sudo dd if=output/images/sdcard.img of=/dev/sdc bs=4MB ; sync
 ```
 
-# Running
-
-With the sd card in the first slot, power on.
-
-After a short period, the kernel will run a console.
+# Console
 
 Depending on your kernel arguments (in the boot partion `/extlinux/extlinux.conf`), console appears over the UART (at 1,500,00 bps!) or on the LCD display / HDMI.  Whichever appears last on the line is the one the console runs on.  Obviously if you select the main display, you'll need a USB keyboard or similar.  Many work, and a small wireless keyboard is quite nice.
 
-This is the default: console runs on the display.
+This is the default: console runs on the display.  `console=tty0` is the second `console` hence the default for the shell.
 
 ```
 LABEL default
@@ -49,19 +51,70 @@ LABEL default
   append root=PARTUUID=%PARTUUID% rootwait console=ttyS2,1500000 console=tty0 rootfstype=ext4 panic=10 loglevel=8 panic=20
 ```
 
-The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.
+The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.    `console=ttyS2,1500000` is the second `console` hence the default for the shell.
+
+```
+LABEL default
+  KERNEL /%LINUXIMAGE%
+  FDTDIR /
+  append root=PARTUUID=%PARTUUID% rootwait console=tty0 console=ttyS2,1500000 rootfstype=ext4 panic=10 loglevel=8 panic=20
+```
+
+You can change this file on the SD card, or in the source before you build (`board/anbernic/rg353/extlinux.conf`)
+
+# Running
+
+With the sd card in the first slot, power on.
+
+Almost instantaneously, U-Boot SPL will run, then U-Boot proper.  If you're on the UART, you'll be given a brief moment to interupt the boot and type commands to U-Boot.  If you do nothing, the boot will continue.
+
+After another very short period (2s or so), the kernel will run a console - either on the display or over the UART.
+
+You should see kernel boot debug messages on the Dispay
 
 Log in with username `root` and password `1234`
 
-# Contents
+It's a real linux system!
 
-The configuration will make a minimal system including:
+```
+# ls /
+bin      init     linuxrc  opt      run      tmp
+dev      lib      media    proc     sbin     usr
+etc      lib64    mnt      root     sys      var
+```
 
-- uboot-spl (2024)
-- uboot (2024)
-- kernel (6.6)
-- busybox
-- shell
+The messages on the display ought to convince you that the display is running.
+
+Running evtest will let you see messages from all the input systems like the push buttons, analog sticks and touchscreen.
+
+```
+# evtest
+No device specified, trying to scan all of /dev/input/event*
+Available devices:
+/dev/input/event0:      pwm-vibrator
+/dev/input/event1:      rk805 pwrkey
+/dev/input/event2:      Hynitron cst3xx Touchscreen
+/dev/input/event3:      dw_hdmi
+/dev/input/event4:      Logitech K600 TV
+/dev/input/event5:      adc-keys
+/dev/input/event6:      rk817_ext Headphones
+/dev/input/event7:      adc-joystick
+/dev/input/event8:      gpio-keys-control
+/dev/input/event9:      gpio-keys-vol
+Select the device event number [0-9]: 2
+Input driver version is 1.0.1
+Input device ID: bus 0x18 vendor 0x0 product 0x0 version 0x0
+Input device name: "Hynitron cst3xx Touchscreen"
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+    Event code 330 (BTN_TOUCH)
+  Event type 3 (EV_ABS)
+```
+
+# Tested Devices
+
+**Anbernic RK353M** - `minimal` branch works perfectly
 
 # Further Work
 
