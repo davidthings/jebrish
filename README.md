@@ -41,8 +41,9 @@ It may stop for various reasons - there may be a missing host tool, or perhaps a
 At the end of the process you should have a file `output/images/sdcard.img` which you can write to an SD card and boot on your device.
 
 ```
-sudo dd if=output/images/sdcard.img of=/dev/sdc bs=4MB ; sync
+sudo dd if=output/images/sdcard.img of=/dev/XXX bs=4MB ; sync
 ```
+**(Be very careful with this command 'dd' - it's is ludicrously easy to target your main drive by mistake and blow your whole installation away.  Substitute the drive name of your SD card for the XXX.  Use the sudo password pause to double check you got it right.)**
 
 # Console
 
