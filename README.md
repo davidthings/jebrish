@@ -1,5 +1,5 @@
 
-# JEBRISH 
+# JEBRISH (Just Enough Build Root -ish)
 
 ![](readme_images/rg353m_glamour.webp)
 
@@ -7,21 +7,23 @@ This is a fork of the [BuildRoot](https://buildroot.org/) project with some sett
 
 It uses the U-Boot and Kernel Config developed for [JELOS](https://jelos.org/), the incredible handheld retrogaming OS.
 
-The purpose of this fork is to provide a dead simple way to build a minimal Linux system for future RK3566-based devices that might want to run JELOS.  This can be a testbed for u-boot, device tree and kernel experimentation.  With these in good shape, the rest of the task of getting JELOS to run can begin. 
+The purpose of this fork is to provide a dead simple way to build a minimal Linux system for future RK3566-based devices that might want to run JELOS.  This can be a testbed for experimentation on things like like U-Boot, Device Tree, and the Kernel.
 
-It attempts to address the situation that applies to a developer who wishes to help with the lower-level parts of the OS, like U-Boot, Device Tree, and the Kernel, but who is not intimately familiar with Linux or Jelos.
+It attempts to address the situation that applies to a developer who wishes to help with the lower-level parts of the OS, but who is not intimately familiar with Linux or Jelos.  Jumping into the middle of the JELOS development environment can be *a lot*.  
 
-BuildRoot provides a compact and well understood environment in which to do this work, with the background knowledge required to be productive is perhaps already known to the developer.  Very importantly, both build and boots times are short.
+BuildRoot provides a compact and well understood environment in which to do this work. Developers may already be familiar with it, and may be interested to learn if not. Very importantly, both build and boot times are short making for quick turnaround.  There are many online resources to explain BuildRoot.
 
 But of course one can also work with JELOS directly!
 
 # Branches
 
-**master** - this is the source BuildRoot branch.  It doesn't boot on the target devices.
-
 **minimal** - this branch is a minimal configuration - just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
+**master** - this is the source BuildRoot branch.  It doesn't boot on the target devices.
+
 # Building
+
+Build Prerequisites are set out in the BuildRoot [manual](https://buildroot.org/downloads/manual/manual.html#requirement)
 
 On a machine set up to build BuildRoot, run the following commands:
 
@@ -31,6 +33,8 @@ make
 ```
 
 Compilation on a reasonable machine with a reasonable internet connection should take about 30 minutes.
+
+It may stop for various reasons - there may be a missing host tool, or perhaps a package didn't download correctly.  Check the output.  Mostly the culprit will be readily identifiable.
 
 At the end of the process you should have a file `output/images/sdcard.img` which you can write to an SD card and boot on your device.
 
@@ -119,6 +123,16 @@ Supported events:
 # Further Work
 
 No doubt there are many things that could be done to improve this work.  Perhaps there are errors, or perhaps the system could be more efficient.
+
+Other devices
+
+- confirm the other devices in the family work
+
+Make a clear statement about the need to remove the built-in SPL on any eMMC's present.
+
+Documentation improvements
+
+- enumerate the most likely build requirements for BuildRoot.
 
 Possible future new branches:
 
