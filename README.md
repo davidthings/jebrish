@@ -3,11 +3,11 @@
 
 ![](readme_images/rg353m_glamour.webp)
 
-This is a fork of the buildroot project with some settings / config for RK3566-based handheld gaming devices.
+This is a fork of the [BuildRoot](https://buildroot.org/) project with some settings / config for RK3566-based handheld gaming devices.
 
-It uses the U-Boot and Kernel Config developed for JELOS.
+It uses the U-Boot and Kernel Config developed for [JELOS](https://jelos.org/), the incredible handheld retrogaming OS.
 
-The purpose of this fork is to provide a dead simple way to build a minimal Linux system for the RK3566 expressly for the purpose of working with new devices that use this chip which might want to work with JELOS eventually.  
+The purpose of this fork is to provide a dead simple way to build a minimal Linux system for future RK3566-based devices that might want to run JELOS.  This can be a testbed for u-boot, device tree and kernel experimentation.  With these in good shape, the rest of the task of getting JELOS to run can begin. 
 
 It attempts to address the situation that applies to a developer who wishes to help with the lower-level parts of the OS, like U-Boot, Device Tree, and the Kernel, but who is not intimately familiar with Linux or Jelos.
 
