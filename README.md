@@ -27,7 +27,7 @@ Various other branches may appear from time to time as experiments are done.
 
 BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the purposes here, each configuration will have an additional field describing additional features of note - `jebrish_[device]_[feature]_deconfig`.  Consistent with this, the actual "baord"-specific files will appear in `board/jebrish/device_feature` with reference to common files in `board/jebrish/common` and `board/jebrish/[device]_common`.
 
-**minimal** - this branch is a minimal configuration - just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
+`jebrish_rg353x_minimal_defconfig` - minimal configuration for RK3566-based handhelds like the Anbernic RG353/p/v/m. It supplies enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
 **min-fs** - minimal configuration extended with a large sd-based filesystem.  Uses `switch_root` in /init.
 

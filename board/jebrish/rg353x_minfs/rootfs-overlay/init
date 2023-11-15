@@ -12,12 +12,9 @@ if (exec 0</dev/console) 2>/dev/null; then
     exec 2>/dev/console
 fi
 
-# DAVID WAS HERE
-
+# Mount the main rootfs partition
 mkdir -p /mnt/root
 mount -t ext4 /dev/mmcblk1p2 /mnt/root
 
-# switch_root -c /dev/console /mnt/root /sbin/init "$@"
+# Switch root to main.  Note linux_utils/switch_root also switches special directories/files.
 exec switch_root /mnt/root /sbin/init "$@"
-
-# exec /sbin/init "$@"
