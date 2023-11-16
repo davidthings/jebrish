@@ -726,7 +726,6 @@ package/libpthsem/0001-fix-build-on-linux-3.x-host.patch Upstream
 package/libressl/0001-always-expose-SSL_OP_NO_TLSv1_3.patch Upstream
 package/libroxml/0001-src-roxml_mem.h-add-missing-extern.patch Upstream
 package/librsvg/0001-gdk-pixbuf-loader-Makefile.am-set-GDK_PIXBUF_MODULED.patch Upstream
-package/librtas/0001-configure.ac-remove-LOCAL_CHECK_FLAGS.patch Upstream
 package/librtlsdr/0001-Makefile.am-respect-DESTDIR-with-install-udev-rules.patch Upstream
 package/libselinux/0001-fix-musl-build.patch Upstream
 package/libselinux/0002-Do-not-use-PYCEXT-and-rely-on-the-installed-file-nam.patch Upstream
@@ -743,7 +742,6 @@ package/libsigrok/0001-Support-glibmm-2.68.patch Upstream
 package/libsigrokdecode/0001-configure-ac-Add-support-for-Python-3-9.patch Upstream
 package/libsigrokdecode/0002-configure-Add-python-3-10-support.patch Upstream
 package/libsigrokdecode/0003-configure-ac-Use-python3-embed-pc-as-a-fallback.patch Upstream
-package/libsolv/0001-Fix-build-without-C.patch Upstream
 package/libsoup/0001-meson.build-set-c_std-to-gnu99.patch Upstream
 package/libsoxr/0001-Add-Libs.private-for-static-linking.patch Upstream
 package/libspatialindex/0001-allow-building-static-libs.patch Upstream
@@ -994,11 +992,10 @@ package/olsr/S50olsr Indent Shellcheck Variables
 package/omxplayer/0001-Update-Makefile-to-be-compatible-with-buildroot.patch Upstream
 package/open-plc-utils/0001-Remove-OWNER-and-GROUPS-parameters-to-install.patch Upstream
 package/open2300/0001-fix-makefile.patch Upstream
-package/openjdk/0001-Add-ARCv2-ISA-processors-support-to-Zero.patch Upstream
-package/openldap/0001-fix_cross_strip.patch Upstream
-package/openldap/0002-fix-bignum.patch Upstream
-package/openldap/0003-disable-docs.patch Upstream
-package/openldap/0004-revert-ITS-3977-fix-libtool-static-behavior-to-match.patch Upstream
+package/openjdk/17.0.9+9/0001-Add-ARCv2-ISA-processors-support-to-Zero.patch Upstream
+package/openjdk/21.0.1+12/0001-Add-ARCv2-ISA-processors-support-to-Zero.patch Upstream
+package/openldap/0001-fix-bignum.patch Upstream
+package/openldap/0002-disable-docs.patch Upstream
 package/openntpd/S49ntp Shellcheck Variables
 package/openocd/0001-configure-enable-build-on-uclinux.patch Upstream
 package/openpgm/0001-Rename-openpgm-5.2.pc.in.patch Upstream
@@ -1124,8 +1121,6 @@ package/python-crossbar/0001-Avoid-intentional-syntax-error.patch Upstream
 package/python-crossbar/0002-requirements-min.txt-drop-indirect-dependencies.patch Upstream
 package/python-crossbar/0003-crossbar-webservice-wap-use-markupsafe-instead-of-we.patch Upstream
 package/python-daphne/0001-remove-pytest-runner-requirement.patch Upstream
-package/python-dnspython/0001-Remove-spurious-wheel-build-dependency.patch Upstream
-package/python-m2crypto/0001-Mitigate-the-Bleichenbacher-timing-attacks-in-the-RSA-decryption-API-CVE-2020-25657.patch Upstream
 package/python-pybind/0001-pybind11-commands.py-support-STAGING_DIR.patch Upstream
 package/python-pylibftdi/0001-do-not-use-find-library.patch Upstream
 package/python-pyqt5/0001-configure-skip-qtdetail.patch Upstream
@@ -1202,7 +1197,6 @@ package/quagga/0002-lib-prefix.h-fix-build-with-gcc-10.patch Upstream
 package/quagga/0003-Fix-build-with-gcc-10.patch Upstream
 package/quotatool/0001-fix-missing-__P-definition-for-musl-compile.patch Upstream
 package/racehound/0001-Fix-module-install-path-lib-instead-of-usr-lib-prefi.patch Upstream
-package/ranger/0001-colorscheme-check-for-compiled-python-files.patch Upstream
 package/rapidxml/0001-ensure-internal-print-operations-are-declared-before.patch Upstream
 package/raspberrypi-usbboot/0001-Makefile-allow-passing-CFLAGS-LDFLAGS.patch Upstream
 package/rdesktop/0001-8bit-colors.patch Sob Upstream
@@ -1338,8 +1332,6 @@ package/swupdate/swupdate.sh Shellcheck
 package/sylpheed/0001-harden-link-checker-before-accepting-click.patch Upstream
 package/sysprof/0001-define-NT_GNU_BUILD_ID.patch Upstream
 package/sysrepo/S51sysrepo-plugind Indent Shellcheck
-package/system-config-printer/0001-Add-option-to-disable-xmlto-manual-generation.patch Upstream
-package/system-config-printer/0002-configure-accept-non-system-cups-config.patch Upstream
 package/sysvinit/0001-Makefile-disable-stack-protector-strong.patch Upstream
 package/tar/0001-lib-getrandom.c-fix-build-with-uclibc-1.0.35.patch Upstream
 package/targetcli-fb/S50target Shellcheck Variables
@@ -1418,9 +1410,6 @@ package/vboot-utils/0004-Disable-static-futility.patch Upstream
 package/vboot-utils/0005-include-sys-sysmacros.h-for-major.patch Upstream
 package/vboot-utils/0006-Update-for-openssl-1.1.patch Upstream
 package/vboot-utils/0007-Make-vboot_version-extern-in-header.patch Upstream
-package/vde2/0001-no-cxx.patch Upstream
-package/vde2/0002-fstp-Add-static-to-inline-functions.patch Upstream
-package/vde2/0003-vde_l3-Add-static-to-inline-functions.patch Upstream
 package/vdr/0001-getloadavg.patch Upstream
 package/vlc/0001-Disable-building-of-statically-linked-vlc-binary.patch Upstream
 package/vlc/0002-automake-add-subdir-objects-option.patch Upstream
@@ -1459,7 +1448,6 @@ package/wampcc/0001-Add-RISC-V-endian-detection.patch Upstream
 package/wampcc/0002-include-wampcc-platform.h-fix-build-with-musl-1.2.0.patch Upstream
 package/wampcc/0003-Broken-build-on-Windows.patch Upstream
 package/watchdogd/S01watchdogd Indent NotExecutable
-package/wavemon/0001-iw_if.h-don-t-include-linux-if.h.patch Upstream
 package/webrtc-audio-processing/0001-Proper-detection-of-cxxabi.h-and-execinfo.h.patch Upstream
 package/wget/0001-lib-getrandom.c-fix-build-with-uclibc-1.0.35.patch Upstream
 package/wilc-driver/0001-cfg80211.c-fix-missing-prandom_u32-with-Linux-6.1.0.patch Upstream
