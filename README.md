@@ -36,10 +36,10 @@ BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the
 
 Build Prerequisites are set out in the BuildRoot [manual](https://buildroot.org/downloads/manual/manual.html#requirement)
 
-On a machine set up to build BuildRoot, run the following commands:
+On a machine set up to build BuildRoot, select a config, and run a command like this:
 
 ```
-make anbernic_rk3566_defconfig
+make jebrish_rg353x_minimal_defconfig
 make
 ```
 
@@ -63,7 +63,7 @@ This is the default: console runs on the display.  `console=tty0` is the second 
 LABEL default
   KERNEL /%LINUXIMAGE%
   FDTDIR /
-  append root=PARTUUID=%PARTUUID% rootwait console=ttyS2,1500000 console=tty0 rootfstype=ext4 panic=10 loglevel=8 panic=20
+  append root=PARTUUID=%PARTUUID% rootwait console=ttyS2,1500000 console=tty0 rootfstype=ext4 panic=10 loglevel=8
 ```
 
 The alternative is that the console runs over the UART.  For this option you'll need to solder wires to connect a USB-UART.  Then you'll need to connect at 1,500,000 baud.    `console=ttyS2,1500000` is the second `console` hence the default for the shell.  See the [UART](#uart) section below for more information.
@@ -72,10 +72,10 @@ The alternative is that the console runs over the UART.  For this option you'll 
 LABEL default
   KERNEL /%LINUXIMAGE%
   FDTDIR /
-  append root=PARTUUID=%PARTUUID% rootwait console=tty0 console=ttyS2,1500000 rootfstype=ext4 panic=10 loglevel=8 panic=20
+  append root=PARTUUID=%PARTUUID% rootwait console=tty0 console=ttyS2,1500000 rootfstype=ext4 panic=10 loglevel=8
 ```
 
-You can change this file on the SD card, or in the source before you build (`board/anbernic/rg353/extlinux.conf`)
+You can change this file on the SD card, or in the source before you build (`board/jebrish/...`)
 
 # Running
 
@@ -129,9 +129,9 @@ Supported events:
 
 # Actual Work
 
-This site is a fork of BuildRoot.  It's almost entirely BuildRoot.  The only changes are in the `board/anbernic/rg353` directory, and the corresponding `configs/anbernic_rk3566_defconfig` file.
+This site is a fork of BuildRoot.  It's almost entirely BuildRoot.  The only changes are in the `board/jebrish` directory, and the corresponding `configs/jebrish_[device]_[variation]_defconfig` file.
 
-In the board directory you'll find
+In the board directories you'll find
 
 - `linux.config` - the JELOS mainline RK3566 kernel
 - `uboot.config` - a U-Boot config for the Anbernic RK3566 devices
@@ -139,13 +139,16 @@ In the board directory you'll find
 - `post-image.sh` - a script that runs `genimage` to create the sdcard.img file
 - `extlinux.conf` - the extlinux config file for the boot partition (including kernel arguments)
 - `genimage.cfg` - the layout of the sdcard.img file
+- `rootfs-overlay` - a directory of files to be copied over the rootfs
 - `rgxx3-rk3566.c` - (unused) a version of the device specific uboot code that has a lot of debug output
 
-`anbernic_rk3566_defconfig` is the BuildRoot config file.  It points to all of the above, and sets some BuildRoot options.
+`jebrish_rk3566_[variatios]_defconfig` are the config files. 
 
 # Tested Devices
 
-**Anbernic RK353M** - `minimal` branch works well.
+**Anbernic RK353M**
+- jebrish_rg353x_minimal_defconfig **OK**
+- jebrish_rg353x_minfs_defconfig **TESTING**
 
 # Further Work
 
@@ -168,6 +171,26 @@ Possible future new branches:
 **min-wireless** - minimal configuration with wireless networking
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
+
+# BuildRoot Commands
+
+make jebrish_[device]_[variation]_defconfig
+
+make
+
+make menuconfig
+
+make savedefconfig  
+
+make show-targets 
+
+make [target]-menuconfig
+
+make [target]-reconfigure
+
+make [target]-rebuild
+
+make [target]-dirclean
 
 # Boot Log
 

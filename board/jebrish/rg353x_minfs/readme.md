@@ -1,34 +1,25 @@
-# RG353x MIN_FS
+# RG353x MINFS
 
-# Build
+## Overview
 
-  $ make jebrish_rg353x_minimal_defconfig
+The absolutely minimal system with a permanent (mutable) ext4 root file system.
+
+On first boot, it is resized by init to fill the available partition.
+
+## Parent Readme
+
+For the common documentation, see [RG353X Common Doc]( ../rg353x_common/readme.md)
+
+## Build
+
+  $ make jebrish_rg353x_minfs_defconfig
   $ make
 
-# Files
+## Input Files
 
-output/images
-|
-+--sdimage.img
+The unique input files are
 
+```
+configs/jebrish_rg353x_minfs_defconfig
+```
 
-# Creating bootable SD card
-
-sudo dd if=output/images/sdcard.img of=/dev/X ; sync
-
-Where X is your SD card device.
-
-# Booting
-
-## Serial console:
-
-ttyS2 - 1500000n81
-
-The boot order on RK35xx is emmc, sd. If emmc contains a valid Image, the board
-always boots from emmc. To boot from SD, erase emmc 
-
-## Login
-
-User:root
-
-Password:1234
