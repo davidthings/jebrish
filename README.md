@@ -15,6 +15,8 @@ BuildRoot provides a compact and well understood environment in which to do this
 
 But of course one can also work with JELOS directly!
 
+Many variations are provided, with varying degrees of functionality.  The most minimal configuration is `jebrish_rg353x_minimal_defconfig` which is just enough to boot and log in.  The most functional is `jebrish_rg353x_minwifi_defconfig` which adds wifi and DHCP. 
+
 # Branches
 
 **main** - this is the main Jebrish branch.  All the configurations are here.
@@ -31,6 +33,7 @@ BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the
 
 **jebrish_rg353x_minfs_defconfig** - minimal configuration extended with a large sd-based non-volatile filesystem.  Expands the `rootfs` to the full size of the media on first use.  Uses `switch_root` in /init.
 
+**jebrish_rg353x_minwifi_defconfig** - minimal wifi system. Builds on the `minfs` variation.  Adds `wpa_supplicant`, `dhcpd`, etc to the build.  With a tiny bit of external config, the system will connect to network on boot.  The network details can be set by editing `/etc/wpa_supplicant.conf`
 
 # Building
 
@@ -129,7 +132,7 @@ Supported events:
 
 # Actual Work
 
-This site is a fork of BuildRoot.  It's almost entirely BuildRoot.  The only changes are in the `board/jebrish` directory, and the corresponding `configs/jebrish_[device]_[variation]_defconfig` file.
+This site is a fork of BuildRoot.  It's almost entirely BuildRoot.  The only changes are in the `board/jebrish` directory, and the corresponding `configs/jebrish_[device]_[variation]_defconfig` files.
 
 In the board directories you'll find
 
@@ -140,7 +143,11 @@ In the board directories you'll find
 - `extlinux.conf` - the extlinux config file for the boot partition (including kernel arguments)
 - `genimage.cfg` - the layout of the sdcard.img file
 - `rootfs-overlay` - a directory of files to be copied over the rootfs
+- `uboot` - U-Boot patches
+- `patches` - General patches
 - `rgxx3-rk3566.c` - (unused) a version of the device specific uboot code that has a lot of debug output
+
+These files are grouped by config variation since different variations have different needs.
 
 `jebrish_rk3566_[variatios]_defconfig` are the config files. 
 
@@ -164,11 +171,9 @@ Documentation improvements
 
 - enumerate the most likely build requirements for BuildRoot.
 
-Possible future new branches:
+Possible future new variations:
 
 **min-display** - minimal configuration with Weston-based display
-
-**min-wireless** - minimal configuration with wireless networking
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
