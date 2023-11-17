@@ -161,6 +161,8 @@ These files are grouped by config variation since different variations have diff
 
 No doubt there are many things that could be done to improve this work.  Perhaps there are errors, or perhaps the system could be more efficient.
 
+This whole repo should probably be BuildRoot external-style, rather than a fork.  
+
 Other devices
 
 - confirm the other devices in the family work
@@ -173,7 +175,7 @@ Documentation improvements
 
 Possible future new variations:
 
-**min-display** - minimal configuration with Weston-based display
+**min-display** - minimal build with Weston-based display
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
