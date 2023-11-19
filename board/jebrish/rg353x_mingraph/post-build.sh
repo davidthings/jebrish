@@ -34,9 +34,9 @@ PARTUUID="$($HOST_DIR/bin/uuidgen)"
 install -d "$BINARIES_DIR/extlinux/"
 install -d "$BINARIES_DIR/rockchip/"
 
-DTB_SOURCE_DIR="output/build/linux-6.6/arch/arm64/boot/dts/rockchip"
+DTB_SOURCE_DIR="output/build/linux-v6.7-rc1/arch/arm64/boot/dts/rockchip"
 
-DEVICE_DTB="rk3566-anbernic-rg353ps rk3566-anbernic-rg353vs rk3566-anbernic-rg503 rk3566-anbernic-rg353p rk3566-anbernic-rg353v" 
+DEVICE_DTB="rk3566-anbernic-rg353ps rk3566-anbernic-rg353vs rk3566-anbernic-rg503 rk3566-anbernic-rg353p rk3566-anbernic-rg353v rk3566-powkiddy-rgb30 rk3566-powkiddy-rk2023" 
 
 for DTB in ${DEVICE_DTB} ; do 
     echo "    Copying $DTB_SOURCE_DIR/${DTB}.dtb to $BINARIES_DIR/rockchip"

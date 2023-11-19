@@ -1,0 +1,42 @@
+From: Chris Morgan <macroalpha82@gmail.com>
+To: linux-rockchip@lists.infradead.org
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	sebastian.reichel@collabora.com, daniel@ffwll.ch,
+	airlied@gmail.com, sam@ravnborg.org, neil.armstrong@linaro.org,
+	heiko@sntech.de, conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>
+Subject: [PATCH V4 2/6] drm/panel: nv3051d: Hold panel in reset for unprepare
+Date: Fri, 17 Nov 2023 14:25:32 -0600	[thread overview]
+Message-ID: <20231117202536.1387815-3-macroalpha82@gmail.com> (raw)
+In-Reply-To: <20231117202536.1387815-1-macroalpha82@gmail.com>
+
+From: Chris Morgan <macromorgan@hotmail.com>
+
+Improve the panel's ability to restore from suspend by holding the
+panel in suspend after unprepare.
+
+Fixes: b1d39f0f4264 ("drm/panel: Add NewVision NV3051D MIPI-DSI LCD panel")
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+---
+ drivers/gpu/drm/panel/panel-newvision-nv3051d.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3051d.c b/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
+index 79de6c886292..c44c6945662f 100644
+--- a/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
++++ b/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
+@@ -261,6 +261,8 @@ static int panel_nv3051d_unprepare(struct drm_panel *panel)
+ 
+ 	usleep_range(10000, 15000);
+ 
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++
+ 	regulator_disable(ctx->vdd);
+ 
+ 	return 0;
+-- 
+2.34.1
+
