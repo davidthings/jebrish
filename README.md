@@ -33,6 +33,8 @@ BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the
 
 **jebrish_rg353x_minfs_defconfig** - minimal configuration extended with a large sd-based non-volatile filesystem.  Expands the `rootfs` to the full size of the media on first use.  Uses `switch_root` in /init.  The filesystem is `ext4` and is mounted read-write.  You can also modify it on a host machine.
 
+**jebrish_rg353x_mingraph_defconfig** - minimal configuration extended with Wayland / Weston. Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.  `kmc`
+
 **jebrish_rg353x_minimal_defconfig** - minimal configuration for RK3566-based handhelds like the Anbernic RG353/p/v/m. It supplies enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
 # Building
@@ -143,7 +145,8 @@ In the board directories you'll find
 - `extlinux.conf` - the extlinux config file for the boot partition (including kernel arguments)
 - `genimage.cfg` - the layout of the sdcard.img file
 - `rootfs-overlay` - a directory of files to be copied over the rootfs
-- `uboot` - U-Boot patches
+- `uboot-patches` - U-Boot patches
+- `linux-patches` - Linux patches
 - `patches` - General patches
 - `rgxx3-rk3566.c` - (unused) a version of the device specific uboot code that has a lot of debug output
 
@@ -156,6 +159,12 @@ These files are grouped by config variation since different variations have diff
 **Anbernic RK353M**
 - jebrish_rg353x_minimal_defconfig **OK**
 - jebrish_rg353x_minfs_defconfig **OK**
+- jebrish_rg353x_minwifi_defconfig **OK**
+- jebrish_rg353x_mingraph_defconfig **OK**
+
+**Powkiddy RGB30**
+- jebrish_rg353x_minimal_defconfig **OK**
+- jebrish_rg353x_mingraph_defconfig **OK**
 
 # Further Work
 
@@ -165,17 +174,19 @@ This whole repo should probably be BuildRoot external-style, rather than a fork.
 
 Other devices
 
-- confirm the other devices in the family work
+- confirm the other devices in the family work - X55!
 
 Make a clear statement about the need to remove the built-in SPL on any eMMC's present.
 
 Documentation improvements
 
 - enumerate the most likely build requirements for BuildRoot.
+- link the config README's to the main one
+- refactor some of the "minimal" doc into the relevant readme
 
 Possible future new variations:
 
-**min-display** - minimal build with Weston-based display
+**minxgraphics** - minimal extension to `mingraphics` that also has Xwayland (And hence glxgears!)
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
