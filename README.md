@@ -3,6 +3,8 @@
 
 ![](readme_images/rg353m_glamour.webp)
 
+<image src="readme_images/powkiddy_rgb30.jpg" style="width: 65%; height: auto;">
+
 This is a fork of the [BuildRoot](https://buildroot.org/) project with some settings / config for RK3566-based handheld gaming devices.
 
 It uses the U-Boot and Kernel Config developed for [JELOS](https://jelos.org/), the incredible handheld retrogaming OS.
@@ -184,9 +186,10 @@ Documentation improvements
 - link the config README's to the main one
 - refactor some of the "minimal" doc into the relevant readme
 
-Possible future new variations:
+Future useful variations:
 
-**minxgraphics** - minimal extension to `mingraphics` that also has Xwayland (And hence glxgears!)
+- **minxgraphics** - minimal extension to `mingraphics` that also has Xwayland (And hence glxgears!)
+- **basic** - configuration with a non-volatile file system, Wayland / Weston graphics, and WiFi.
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
