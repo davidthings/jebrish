@@ -1,0 +1,10 @@
+echo "RTW88 Adjustment"
+
+# RTW88 needs a little help getting started
+# - it needs to be reloaded (something's not right the first time)
+# - the core module needs to be told to disable LPS deep sleep
+
+rmmod rtw88_8821cs 
+modprobe rtw88_8821cs
+
+echo "Y" > /sys/module/rtw88_core/parameters/disable_lps_deep

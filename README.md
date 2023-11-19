@@ -895,3 +895,12 @@ Wires
 No VCC (3.3V or 5V) connection is required.
 
 Finding some way to secure the wires is recommended, since they will only take 4 or 5 flexes before they break.
+
+## @MM On Wifi
+
+> wifi at another layer deeper consists of cfg80211 which is how the network card does what it's supposed to do. The driver implements all the required and some of the optional cfg80211 methods to do things like scan for networks, connect to networks, create a phy (which I guess is kind of like a network interface) and whatnot.
+>
+> If your card is capable of doing all that in hardware then your card will interface with cfg80211. If you need the kernel to do stuff for you like manage encryption or whatnot you implement mac80211 which does a lot of the cfg80211 stuff but in software
+>
+>so wifi needs cfg80211 and depending upon what your card hardware can do you also use mac80211 to fill in some of the bits with software routines
+
