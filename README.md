@@ -1,9 +1,9 @@
 
 # JEBRISH (Just Enough Build Root -ish)
 
-![](readme_images/rg353m_glamour.webp)
-
-<image src="readme_images/powkiddy_rgb30.jpg" style="width: 65%; height: auto;">
+<image src="readme_images/powkiddy_x55.jpg" style="width: 23%; height: auto;">
+<image src="readme_images/powkiddy_rgb30.jpg" style="width: 15%; height: auto;">
+<image src="readme_images/rg353m_glamour.webp" style="width: 15%; height: auto;">
 
 This is a fork of the [BuildRoot](https://buildroot.org/) project with some settings / config for RK3566-based handheld gaming devices.
 
@@ -30,6 +30,8 @@ Various other branches may appear from time to time as experiments are done.
 # Configurations
 
 BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the purposes here, each configuration will have an additional field describing additional features of note - `jebrish_[device]_[feature]_deconfig`.  Consistent with this, the actual "baord"-specific files will appear in `board/jebrish/device_feature` with reference to common files in `board/jebrish/common` and `board/jebrish/[device]_common`.
+
+**jebrish_rg353x_basic_defconfig** - this is a basic real-world configuration.  It has a non-volatile filesystem, Wayland / Weston graphics, and WiFi.
 
 **jebrish_rg353x_minwifi_defconfig** - minimal wifi system. Builds on the `minfs` variation.  Adds `wpa_supplicant`, `dhcpd`, etc to the build.  With a tiny bit of external config, the system will connect to network on boot.  The network details can be set by editing `/etc/wpa_supplicant.conf`.  `DropBear` is added to provide an ssh server and mDNS so the device can be found by name on the network.
 
@@ -159,14 +161,15 @@ These files are grouped by config variation since different variations have diff
 # Tested Devices
 
 **Anbernic RK353M**
-- jebrish_rg353x_minimal_defconfig **OK**
-- jebrish_rg353x_minfs_defconfig **OK**
-- jebrish_rg353x_minwifi_defconfig **OK**
-- jebrish_rg353x_mingraph_defconfig **OK**
+- working nicely
 
 **Powkiddy RGB30**
-- jebrish_rg353x_minimal_defconfig **OK**
-- jebrish_rg353x_mingraph_defconfig **OK**
+- working nicely
+
+**Powkiddy X55**
+- no display as yet
+- no WiFi
+- not recommended to use yet
 
 # Further Work
 
@@ -189,7 +192,6 @@ Documentation improvements
 Future useful variations:
 
 - **minxgraphics** - minimal extension to `mingraphics` that also has Xwayland (And hence glxgears!)
-- **basic** - configuration with a non-volatile file system, Wayland / Weston graphics, and WiFi.
 
 BuildRoot updates and bug fixes should be brought into this fork as they appear and can be tested.
 
