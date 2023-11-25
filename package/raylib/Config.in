@@ -1,0 +1,13 @@
+config BR2_PACKAGE_RAYLIB
+	bool "raylib"
+#	depends on BR2_TOOLCHAIN_HAS_THREADS
+#	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_5_0
+#	select BR2_PACKAGE_RAYLIB
+	help
+	  Raylib Graphics Package.
+
+	  https://www.raylib.com/index.html
+
+# comment "cfm needs a toolchain w/ threads, kernel headers >= 5.0"
+# 	depends on !BR2_TOOLCHAIN_HAS_THREADS \
+# 		|| !BR2_TOOLCHAIN_HEADERS_AT_LEAST_5_0
