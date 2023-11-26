@@ -12,4 +12,9 @@ RAYLIB_INSTALL_TARGET = YES
 RAYLIB_CONF_OPTS = -DUSE_WAYLAND=ON -DBUILD_EXAMPLES=ON -DGLFW_BUILD_X11=OFF
 RAYLIB_DEPENDENCIES = mesa3d libgl wayland libxkbcommon wayland-protocols
 
+define RAYLIB_INSTALL_TARGET_CMDS
+    $(INSTALL) -d $(TARGET_DIR)/usr/raylib
+    cp -R $(@D)/examples/* $(TARGET_DIR)/usr/raylib
+endef
+
 $(eval $(cmake-package))
