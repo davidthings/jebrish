@@ -135,6 +135,7 @@ config BR2_PACKAGE_WESTON_XWAYLAND
 	select BR2_PACKAGE_LIBXCB
 	select BR2_PACKAGE_XLIB_LIBX11
 	select BR2_PACKAGE_XLIB_LIBXCURSOR
+    select BR2_PACKAGE_XCB_UTIL_CURSO
 	select BR2_PACKAGE_XWAYLAND
 
 comment "XWayland support needs libepoxy and X.org enabled"
