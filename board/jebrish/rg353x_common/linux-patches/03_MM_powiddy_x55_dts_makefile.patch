@@ -1,0 +1,10 @@
+--- linux-v6.7-rc1/arch/arm64/boot/dts/rockchip/Makefile.orig	2023-11-28 20:35:16.171718744 -0800
++++ linux-v6.7-rc1/arch/arm64/boot/dts/rockchip/Makefile	2023-11-28 20:35:44.285292291 -0800
+@@ -79,6 +79,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-pi
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-pinenote-v1.2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-powkiddy-rgb30.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-powkiddy-rk2023.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-powkiddy-x55.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-quartz64-a.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-quartz64-b.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-radxa-cm3-io.dtb
