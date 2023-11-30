@@ -4,7 +4,7 @@
 
 The absolutely minimal system with a permanent (mutable) ext4 root file system.
 
-On first boot, it is resized by init to fill the available partition.
+No resize on first boot takes place since it is mounted from the very start.
 
 ## Parent Readme
 

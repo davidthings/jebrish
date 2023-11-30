@@ -19,16 +19,16 @@ configs/jebrish_rg353x_minfs_defconfig
 
 ```
 board/jebrish/rg353x_common
-|
-+ extlinux.conf  # kernel args 
-+ genimage.cfg   # genimage config 
-+ linux.config   # kernel config
-+ uboot.config   # uboot config
-+ post-build.sh  # copy files for the boot partition, setup genimage.cfg
-+ post-image.sh  # invoke genimage to create sdcard.img
-+ rootfs-overlay # files to copy over the rootfs
   |
-  + init         # init with switch_root 
+  + extlinux.conf  # kernel args 
+  + genimage.cfg   # genimage config 
+  + linux.config   # kernel config
+  + uboot.config   # uboot config
+  + post-build.sh  # copy files for the boot partition, setup genimage.cfg
+  + post-image.sh  # invoke genimage to create sdcard.img
+  + rootfs-overlay # files to copy over the rootfs
+    |
+    + init         # init with switch_root 
 ```
 
 ## Output Files
