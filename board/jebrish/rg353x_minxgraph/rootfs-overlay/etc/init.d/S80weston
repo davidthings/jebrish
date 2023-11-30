@@ -1,0 +1,6 @@
+mkdir /tmp/.X11-unix
+
+XDG_RUNTIME_DIR=/var/weston
+
+weston &
+
