@@ -1,6 +1,6 @@
 mkdir /tmp/.X11-unix
 
-XDG_RUNTIME_DIR=/var/weston
+export XDG_RUNTIME_DIR=/var/weston
 
-weston &
+weston -c /root/.config/weston &
 
