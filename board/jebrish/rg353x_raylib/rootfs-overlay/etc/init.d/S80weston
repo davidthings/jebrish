@@ -1,0 +1,7 @@
+mkdir /tmp/.X11-unix
+
+chmod 700 /var/weston
+export XDG_RUNTIME_DIR=/var/weston
+
+# weston -c /root/.config/weston.ini &
+
