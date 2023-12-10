@@ -45,8 +45,10 @@ done
 
 sed -e "$(generic_getty)" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
-	"board/jebrish/rg353x_minimal/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
+	-e "s/%PARTUUID%/$PARTUUID/g" \
+	"board/jebrish/rg353x_common/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
-sed -e "s/%LINUXIMAGE%/$(linux_image)/g" \
-    "board/jebrish/rg353x_minimal/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+sed -e "s/%PARTUUID%/$PARTUUID/g" \
+	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
+    "board/jebrish/rg353x_common/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
 
