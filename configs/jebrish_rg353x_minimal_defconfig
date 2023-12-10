@@ -1,8 +1,11 @@
 BR2_aarch64=y
 BR2_BACKUP_SITE="http://sources.buildroot.net"
 BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV=y
+BR2_TARGET_GENERIC_HOSTNAME="JEB_RG353"
+BR2_TARGET_GENERIC_ISSUE="JEBRISH RG353 MINIMAL"
 BR2_ROOTFS_POST_BUILD_SCRIPT="board/jebrish/rg353x_minimal/post-build.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="board/jebrish/rg353x_common/post-image.sh"
+BR2_TARGET_GENERIC_ROOT_PASSWD="1234"
 BR2_LINUX_KERNEL=y
 BR2_LINUX_KERNEL_CUSTOM_TARBALL=y
 BR2_LINUX_KERNEL_CUSTOM_TARBALL_LOCATION="https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/snapshot/linux-next-next-20231208.tar.gz"
