@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provides an absolutely minimal system.  There is no rootfs on the disk.
+Provides an absolutely minimal system.  There is no rootfs on the disk.  Or perhaps there is no initramfs..
 
 Demonstrates UBoot-SPL, UBoot, and kernel.
 
