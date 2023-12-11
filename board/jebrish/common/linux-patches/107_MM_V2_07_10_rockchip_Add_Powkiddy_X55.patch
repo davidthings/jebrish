@@ -1,0 +1,45 @@
+From: Chris Morgan <macroalpha82@gmail.com>
+To: linux-rockchip@lists.infradead.org
+Cc: dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, sboyd@kernel.org,
+	mturquette@baylibre.com, tzimmermann@suse.de, mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com, daniel@ffwll.ch,
+	airlied@gmail.com, sam@ravnborg.org, quic_jesszhan@quicinc.com,
+	neil.armstrong@linaro.org, javierm@redhat.com, heiko@sntech.de,
+	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH V2 07/10] clk: rockchip: Mark pclk_usb as critical on rk3568
+Date: Mon,  4 Dec 2023 12:57:16 -0600	[thread overview]
+Message-ID: <20231204185719.569021-8-macroalpha82@gmail.com> (raw)
+In-Reply-To: <20231204185719.569021-1-macroalpha82@gmail.com>
+
+From: Chris Morgan <macromorgan@hotmail.com>
+
+In the reference manual under "2.8.6 NIU Clock gating reliance"
+it is stated that pclk_usb_niu has a dependency on hclk_usb_niu.
+
+While the manual does not state that this is a bi-directional
+relationship it was noted that the sdmmc2 failed to operate for me in
+mmc mode if the pclk_usb was not marked as critical. The parent clock
+of the hclk_sdmmc2 is hclk_usb.
+
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+---
+ drivers/clk/rockchip/clk-rk3568.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
+index bfbcbb744327..c4fa2375dbfb 100644
+--- a/drivers/clk/rockchip/clk-rk3568.c
++++ b/drivers/clk/rockchip/clk-rk3568.c
+@@ -1595,6 +1595,7 @@ static const char *const rk3568_cru_critical_clocks[] __initconst = {
+ 	"pclk_php",
+ 	"hclk_usb",
+ 	"hclk_vo",
++	"pclk_usb",
+ };
+ 
+ static const char *const rk3568_pmucru_critical_clocks[] __initconst = {
+-- 
+2.34.1
+

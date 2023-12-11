@@ -1,0 +1,41 @@
+From: Chris Morgan <macroalpha82@gmail.com>
+To: linux-rockchip@lists.infradead.org
+Cc: dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, sboyd@kernel.org,
+	mturquette@baylibre.com, tzimmermann@suse.de, mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com, daniel@ffwll.ch,
+	airlied@gmail.com, sam@ravnborg.org, quic_jesszhan@quicinc.com,
+	neil.armstrong@linaro.org, javierm@redhat.com, heiko@sntech.de,
+	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org, Chris Morgan <macromorgan@hotmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH V2 05/10] dt-bindings: display: himax-hx8394: Add Powkiddy X55 panel
+Date: Mon,  4 Dec 2023 12:57:14 -0600	[thread overview]
+Message-ID: <20231204185719.569021-6-macroalpha82@gmail.com> (raw)
+In-Reply-To: <20231204185719.569021-1-macroalpha82@gmail.com>
+
+From: Chris Morgan <macromorgan@hotmail.com>
+
+Add compatible string for the Powkiddy X55 panel.
+
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../devicetree/bindings/display/panel/himax,hx8394.yaml          | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/himax,hx8394.yaml b/Documentation/devicetree/bindings/display/panel/himax,hx8394.yaml
+index 3096debca55c..916bb7f94206 100644
+--- a/Documentation/devicetree/bindings/display/panel/himax,hx8394.yaml
++++ b/Documentation/devicetree/bindings/display/panel/himax,hx8394.yaml
+@@ -23,6 +23,7 @@ properties:
+     items:
+       - enum:
+           - hannstar,hsd060bhw4
++          - powkiddy,x55-panel
+       - const: himax,hx8394
+ 
+   reg: true
+-- 
+2.34.1
+
