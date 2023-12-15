@@ -1,11 +1,12 @@
 From: Chris Morgan <macroalpha82@gmail.com>
 To: u-boot@lists.denx.de
-Cc: kever.yang@rock-chips.com, philipp.tomsich@vrull.eu,
-	sjg@chromium.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH V2 1/4] board: rockchip: Refactor panel auto-detect code
-Date: Fri, 17 Nov 2023 15:15:03 -0600	[thread overview]
-Message-ID: <20231117211506.1396929-2-macroalpha82@gmail.com> (raw)
-In-Reply-To: <20231117211506.1396929-1-macroalpha82@gmail.com>
+Cc: andre.przywara@arm.com, kever.yang@rock-chips.com,
+	philipp.tomsich@vrull.eu, sjg@chromium.org,
+	Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH V3 1/7] board: rockchip: Refactor panel auto-detect code
+Date: Mon, 11 Dec 2023 17:21:19 -0600	[thread overview]
+Message-ID: <20231211232125.171438-2-macroalpha82@gmail.com> (raw)
+In-Reply-To: <20231211232125.171438-1-macroalpha82@gmail.com>
 
 From: Chris Morgan <macromorgan@hotmail.com>
 
@@ -227,49 +228,3 @@ index 3f1a42d184..3d0c614623 100644
 -- 
 2.34.1
 
-next prev parent reply	other threads:[~2023-11-17 21:15 UTC|newest]
-
-Thread overview: 7+ messages / expand[flat|nested]  mbox.gz  Atom feed  top
-2023-11-17 21:15 [PATCH V2 0/4] Add Additional Boards and Features to RGxx3 Chris Morgan
-2023-11-17 21:15 ` Chris Morgan [this message]
-2023-11-18 17:10   ` [PATCH V2 1/4] board: rockchip: Refactor panel auto-detect code Simon Glass
-2023-11-19  5:00     ` Chris Morgan
-2023-11-17 21:15 ` [PATCH V2 2/4] board: rockchip: Add Recovery Button for Anbernic RGxx3 Chris Morgan
-2023-11-17 21:15 ` [PATCH V2 3/4] board: rockchip: Add support for RGB30 and RK2023 to RGxx3 Chris Morgan
-2023-11-17 21:15 ` [PATCH V2 4/4] doc: board: anbernic: Update rgxx3 to add new boards Chris Morgan
-find likely ancestor, descendant, or conflicting patches for this message:
-dfblob:3f1a42d18 dfblob:3d0c61462
-
-	(help)
-Reply instructions:
-
-You may reply publicly to this message via plain-text email
-using any one of the following methods:
-
-* Save the following mbox file, import it into your mail client,
-  and reply-to-all from there: mbox
-
-  Avoid top-posting and favor interleaved quoting:
-  https://en.wikipedia.org/wiki/Posting_style#Interleaved_style
-
-* Reply using the --to, --cc, and --in-reply-to
-  switches of git-send-email(1):
-
-  git send-email \
-    --in-reply-to=20231117211506.1396929-2-macroalpha82@gmail.com \
-    --to=macroalpha82@gmail.com \
-    --cc=kever.yang@rock-chips.com \
-    --cc=macromorgan@hotmail.com \
-    --cc=philipp.tomsich@vrull.eu \
-    --cc=sjg@chromium.org \
-    --cc=u-boot@lists.denx.de \
-    /path/to/YOUR_REPLY
-
-  https://kernel.org/pub/software/scm/git/docs/git-send-email.html
-
-* If your mail client supports setting the In-Reply-To header
-  via mailto: links, try the mailto: link
-Be sure your reply has a Subject: header at the top and a blank line before the message body.
-This is a public inbox, see mirroring instructions
-for how to clone and mirror all data and code used for this inbox;
-as well as URLs for NNTP newsgroup(s).

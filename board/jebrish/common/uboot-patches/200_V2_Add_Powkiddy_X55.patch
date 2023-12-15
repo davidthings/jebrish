@@ -1,15 +1,31 @@
 From: Chris Morgan <macroalpha82@gmail.com>
 To: u-boot@lists.denx.de
-Cc: kever.yang@rock-chips.com, philipp.tomsich@vrull.eu,
-	sjg@chromium.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH] board: rockchip: add Powkiddy X55
-Date: Tue,  5 Dec 2023 15:39:29 -0600	[thread overview]
-Message-ID: <20231205213929.95324-1-macroalpha82@gmail.com> (raw)
+Cc: jbx6244@gmail.com, jonas@kwiboo.se, kever.yang@rock-chips.com,
+	philipp.tomsich@vrull.eu, sjg@chromium.org,
+	Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH V2] board: rockchip: add Powkiddy X55
+Date: Thu, 14 Dec 2023 12:24:33 -0600	[thread overview]
+Message-ID: <20231214182433.37454-1-macroalpha82@gmail.com> (raw)
 
 From: Chris Morgan <macromorgan@hotmail.com>
 
 The Powkiddy X55 is a Rockchip RK3566 based handheld gaming device.
-UART, ADC, eMMC, and SDMMC are tested to work.
+UART, ADC, eMMC, and SDMMC are tested to work in U-Boot and this
+successfully boots mainline Linux.
+
+Changes since V1:
+ - Built on top of this patch series [1] which makes the ADC detect
+   function more generic and also moves the board_rng_seed to a more
+   generic location.
+ - Updated U-Boot specific devicetree to drop redundant values and
+   add nodes required for ADC detection in SPL.
+ - Updated defconfig to add additional options for SPL ADC detection
+   logic as well as drop some drivers that are not needed. Note that
+   CONFIG_DM_PMIC_FAN53555 is used by the tcs,tcs4525 regulator on
+   i2c0 at 0x1c. Additionally the code fails to compile without
+   selecting CONFIG_SPL_ROCKCHIP_BACK_TO_BROM.
+
+[1] https://lore.kernel.org/u-boot/20231211232125.171438-1-macroalpha82@gmail.com/
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 ---
@@ -18,15 +34,16 @@ Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
  arch/arm/dts/rk3566-powkiddy-x55.dts         | 926 +++++++++++++++++++
  arch/arm/mach-rockchip/rk3568/Kconfig        |   6 +
  board/powkiddy/x55/Kconfig                   |  15 +
- board/powkiddy/x55/MAINTAINERS               |   8 +
+ board/powkiddy/x55/MAINTAINERS               |   9 +
  board/powkiddy/x55/Makefile                  |   6 +
- board/powkiddy/x55/x55.c                     | 101 ++
- configs/powkiddy-x55-rk3566_defconfig        |  86 ++
+ board/powkiddy/x55/x55.c                     |  42 +
+ configs/powkiddy-x55-rk3566_defconfig        |  92 ++
  doc/board/index.rst                          |   1 +
  doc/board/powkiddy/index.rst                 |   9 +
- doc/board/powkiddy/x55.rst                   |  46 +
- include/configs/powkiddy-x55-rk3566.h        |  12 +
- 13 files changed, 1284 insertions(+)
+ doc/board/powkiddy/x55.rst                   |  25 +
+ doc/board/rockchip/rockchip.rst              |   1 +
+ include/configs/powkiddy-x55-rk3566.h        |  14 +
+ 14 files changed, 1214 insertions(+)
  create mode 100644 arch/arm/dts/rk3566-powkiddy-x55-u-boot.dtsi
  create mode 100644 arch/arm/dts/rk3566-powkiddy-x55.dts
  create mode 100644 board/powkiddy/x55/Kconfig
@@ -39,20 +56,20 @@ Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
  create mode 100644 include/configs/powkiddy-x55-rk3566.h
 
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index 1be08c5fdc..9e38bab6eb 100644
+index 5fc888680b..6e5cb7c3e9 100644
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
-@@ -174,6 +174,7 @@ dtb-$(CONFIG_ROCKCHIP_RK3568) += \
+@@ -172,6 +172,7 @@ dtb-$(CONFIG_ROCKCHIP_RK3399) += \
+ 
+ dtb-$(CONFIG_ROCKCHIP_RK3568) += \
  	rk3566-anbernic-rgxx3.dtb \
++	rk3566-powkiddy-x55.dtb \
  	rk3566-quartz64-a.dtb \
  	rk3566-quartz64-b.dtb \
-+	rk3566-powkiddy-x55.dtb \
  	rk3566-radxa-cm3-io.dtb \
- 	rk3566-soquartz-blade.dtb \
- 	rk3566-soquartz-cm4.dtb \
 diff --git a/arch/arm/dts/rk3566-powkiddy-x55-u-boot.dtsi b/arch/arm/dts/rk3566-powkiddy-x55-u-boot.dtsi
 new file mode 100644
-index 0000000000..2e3998a65a
+index 0000000000..1a3089b598
 --- /dev/null
 +++ b/arch/arm/dts/rk3566-powkiddy-x55-u-boot.dtsi
 @@ -0,0 +1,67 @@
@@ -63,7 +80,6 @@ index 0000000000..2e3998a65a
 +/ {
 +	chosen {
 +		stdout-path = &uart2;
-+		u-boot,spl-boot-order = "same-as-spl", &sdmmc0, &sdhci;
 +	};
 +
 +	rng: rng@fe388000 {
@@ -107,19 +123,20 @@ index 0000000000..2e3998a65a
 +	assigned-clock-parents = <&pmucru CLK_RTC_32K>;
 +};
 +
-+/*
-+ * We don't need the clocks, but if they are present they may cause
-+ * probing to fail so we remove them for U-Boot.
-+ */
-+&rk817 {
-+	/delete-property/ assigned-clocks;
-+	/delete-property/ assigned-clock-parents;
-+	/delete-property/ clocks;
-+	/delete-property/ clock-names;
++/* Move the saradc to a fixed regulator so that it works in SPL. */
++&saradc {
++	bootph-all;
++	vref-supply = <&vcc_sys>;
++	status = "okay";
 +};
 +
 +&uart2 {
 +	clock-frequency = <24000000>;
++	bootph-all;
++	status = "okay";
++};
++
++&vcc_sys {
 +	bootph-all;
 +	status = "okay";
 +};
@@ -1101,10 +1118,10 @@ index 0000000000..a7b3ed4d0d
 +endif
 diff --git a/board/powkiddy/x55/MAINTAINERS b/board/powkiddy/x55/MAINTAINERS
 new file mode 100644
-index 0000000000..2c83cd6ee1
+index 0000000000..9ed48f408e
 --- /dev/null
 +++ b/board/powkiddy/x55/MAINTAINERS
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,9 @@
 +X55
 +M:	Chris Morgan <macromorgan@hotmail.com>
 +S:	Maintained
@@ -1113,6 +1130,7 @@ index 0000000000..2c83cd6ee1
 +F:	configs/powkiddy-x55-rk3566_defconfig
 +F:	arch/arm/dts/rk3566-powkiddy-x55.dts
 +F:	arch/arm/dts/rk3566-powkiddy-x55-u-boot.dtsi
++F:	doc/board/powkiddy/x55.rst
 diff --git a/board/powkiddy/x55/Makefile b/board/powkiddy/x55/Makefile
 new file mode 100644
 index 0000000000..55c8c16aa1
@@ -1127,20 +1145,17 @@ index 0000000000..55c8c16aa1
 +obj-y += x55.o
 diff --git a/board/powkiddy/x55/x55.c b/board/powkiddy/x55/x55.c
 new file mode 100644
-index 0000000000..5c8d7e2bcd
+index 0000000000..8d98baa24f
 --- /dev/null
 +++ b/board/powkiddy/x55/x55.c
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,42 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright (c) 2023 Chris Morgan <macromorgan@hotmail.com>
 + */
 +
++#include <asm/arch-rockchip/boot_mode.h>
 +#include <asm/io.h>
-+#include <command.h>
-+#include <linux/iopoll.h>
-+
-+#define BOOT_BROM_DOWNLOAD	0xef08a53c
 +
 +#define GPIO4_BASE		0xfe770000
 +#define GPIO_SWPORT_DR_L	0x0000
@@ -1151,69 +1166,13 @@ index 0000000000..5c8d7e2bcd
 +
 +#define GPIO_WRITEMASK(bits)	((bits) << 16)
 +
-+#define SARADC_BASE		0xfe720000
-+#define SARADC_DATA		0x0000
-+#define SARADC_STAS		0x0004
-+#define SARADC_ADC_STATUS	BIT(0)
-+#define SARADC_CTRL		0x0008
-+#define SARADC_INPUT_SRC_MSK	0x7
-+#define SARADC_POWER_CTRL	BIT(3)
-+
-+/*
-+ * Read the function "button" to determine if we need to boot straight
-+ * into download mode. In this case a user would hold the left joystick
-+ * all the way to the left when powering on the device. This function is
-+ * needed because 1) on some devices it may not be possible to bypass the
-+ * eMMC in the bootpath and 2) after A-TF loads the device will simply
-+ * reboot instead of booting into download mode.
-+ */
-+void read_func_button(void)
-+{
-+	int ret;
-+	u32 reg;
-+
-+	/* Turn off SARADC to reset it. */
-+	writel(0, (SARADC_BASE + SARADC_CTRL));
-+
-+	/* Enable channel 0 and power on SARADC. */
-+	writel(((0 & SARADC_INPUT_SRC_MSK) | SARADC_POWER_CTRL),
-+	       (SARADC_BASE + SARADC_CTRL));
-+
-+	/*
-+	 * Wait for data to be ready. Use timeout of 20000us from
-+	 * rockchip_saradc driver.
-+	 */
-+	ret = readl_poll_timeout((SARADC_BASE + SARADC_STAS), reg,
-+				 !(reg & SARADC_ADC_STATUS), 20000);
-+	if (ret) {
-+		printf("ADC Timeout");
-+		return;
-+	}
-+
-+	/* Read the data from the SARADC. */
-+	reg = readl((SARADC_BASE + SARADC_DATA));
-+
-+	/* Turn the SARADC back off so it's ready to be used again. */
-+	writel(0, (SARADC_BASE + SARADC_CTRL));
-+
-+	/*
-+	 * If the value is less than 30 the button is being pressed.
-+	 * Reset the device back into Rockchip download mode.
-+	 */
-+	if (reg <= 30) {
-+		printf("download key pressed, entering download mode...");
-+		writel(BOOT_BROM_DOWNLOAD, CONFIG_ROCKCHIP_BOOT_MODE_REG);
-+		do_reset(NULL, 0, 0, NULL);
-+	}
-+};
-+
 +/*
 + * Start LED very early so user knows device is on. Set color
 + * to red.
 + */
 +void spl_board_init(void)
 +{
-+	read_func_button();
++	setup_boot_mode();
 +
 +	/* Set GPIO4_B4, GPIO4_B5, and GPIO4_B6 to output. */
 +	writel(GPIO_WRITEMASK(GPIO_B6 | GPIO_B5 | GPIO_B4) | \
@@ -1234,15 +1193,16 @@ index 0000000000..5c8d7e2bcd
 +}
 diff --git a/configs/powkiddy-x55-rk3566_defconfig b/configs/powkiddy-x55-rk3566_defconfig
 new file mode 100644
-index 0000000000..aa29df04d1
+index 0000000000..f9a513f97c
 --- /dev/null
 +++ b/configs/powkiddy-x55-rk3566_defconfig
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,92 @@
 +CONFIG_ARM=y
 +CONFIG_SKIP_LOWLEVEL_INIT=y
 +CONFIG_COUNTER_FREQUENCY=24000000
 +CONFIG_ARCH_ROCKCHIP=y
 +CONFIG_TEXT_BASE=0x00a00000
++CONFIG_SPL_GPIO=y
 +CONFIG_SPL_LIBCOMMON_SUPPORT=y
 +CONFIG_SPL_LIBGENERIC_SUPPORT=y
 +CONFIG_NR_DRAM_BANKS=2
@@ -1264,13 +1224,14 @@ index 0000000000..aa29df04d1
 +CONFIG_DEBUG_UART=y
 +CONFIG_FIT=y
 +CONFIG_FIT_VERBOSE=y
++CONFIG_SPL_FIT_SIGNATURE=y
 +CONFIG_SPL_LOAD_FIT=y
++CONFIG_LEGACY_IMAGE_FORMAT=y
 +CONFIG_OF_STDOUT_VIA_ALIAS=y
 +CONFIG_DEFAULT_FDT_FILE="rockchip/rk3566-powkiddy-x55.dtb"
-+# CONFIG_CONSOLE_MUX is not set
 +# CONFIG_DISPLAY_CPUINFO is not set
 +CONFIG_DISPLAY_BOARDINFO_LATE=y
-+CONFIG_SPL_MAX_SIZE=0x20000
++CONFIG_SPL_MAX_SIZE=0x40000
 +CONFIG_SPL_PAD_TO=0x7f8000
 +CONFIG_SPL_HAS_BSS_LINKER_SECTION=y
 +CONFIG_SPL_BSS_START_ADDR=0x4000000
@@ -1279,17 +1240,20 @@ index 0000000000..aa29df04d1
 +# CONFIG_SPL_RAW_IMAGE_SUPPORT is not set
 +# CONFIG_SPL_SHARES_INIT_SP_ADDR is not set
 +CONFIG_SPL_STACK_R=y
++CONFIG_SPL_ADC=y
++CONFIG_SPL_POWER=y
 +CONFIG_SPL_ATF=y
 +CONFIG_CMD_PWM=y
 +CONFIG_CMD_GPT=y
 +CONFIG_CMD_MMC=y
 +# CONFIG_CMD_SETEXPR is not set
-+# CONFIG_CMD_CLS is not set
 +# CONFIG_SPL_DOS_PARTITION is not set
 +CONFIG_SPL_OF_CONTROL=y
 +CONFIG_OF_LIVE=y
++CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
 +CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG=y
 +# CONFIG_NET is not set
++CONFIG_SPL_DM_SEQ_ALIAS=y
 +CONFIG_SPL_REGMAP=y
 +CONFIG_SPL_SYSCON=y
 +CONFIG_SPL_CLK=y
@@ -1304,13 +1268,13 @@ index 0000000000..aa29df04d1
 +CONFIG_MMC_SDHCI=y
 +CONFIG_MMC_SDHCI_SDMA=y
 +CONFIG_MMC_SDHCI_ROCKCHIP=y
++CONFIG_SPL_PINCTRL=y
 +CONFIG_DM_PMIC=y
 +CONFIG_DM_PMIC_FAN53555=y
 +CONFIG_PMIC_RK8XX=y
-+CONFIG_REGULATOR_PWM=y
-+CONFIG_DM_REGULATOR_GPIO=y
++CONFIG_SPL_DM_REGULATOR=y
++CONFIG_SPL_DM_REGULATOR_FIXED=y
 +CONFIG_REGULATOR_RK8XX=y
-+CONFIG_DM_REGULATOR_SCMI=y
 +CONFIG_PWM_ROCKCHIP=y
 +CONFIG_SPL_RAM=y
 +# CONFIG_RAM_ROCKCHIP_DEBUG is not set
@@ -1322,6 +1286,7 @@ index 0000000000..aa29df04d1
 +CONFIG_SYS_NS16550_MEM32=y
 +CONFIG_SYSRESET=y
 +CONFIG_REGEX=y
++# CONFIG_RSA is not set
 +CONFIG_ERRNO_STR=y
 +# CONFIG_EFI_LOADER is not set
 diff --git a/doc/board/index.rst b/doc/board/index.rst
@@ -1353,10 +1318,10 @@ index 0000000000..b0115a73d4
 +   x55.rst
 diff --git a/doc/board/powkiddy/x55.rst b/doc/board/powkiddy/x55.rst
 new file mode 100644
-index 0000000000..66d02944c9
+index 0000000000..cd7456883b
 --- /dev/null
 +++ b/doc/board/powkiddy/x55.rst
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,25 @@
 +.. SPDX-License-Identifier: GPL-2.0+
 +
 +U-Boot for Powkiddy X55 Handheld Gaming Console
@@ -1380,35 +1345,26 @@ index 0000000000..66d02944c9
 +marked DC/OTG should be set to peripheral mode and allow a user to
 +manipulate the device with the rkdeveloptool tool.
 +
-+Building U-Boot
-+---------------
-+
-+.. code-block:: bash
-+
-+    $ export CROSS_COMPILE=aarch64-linux-gnu-
-+    $ export BL31=../rkbin/bin/rk35/rk3568_bl31_v1.34.elf
-+    $ export ROCKCHIP_TPL=../rkbin/bin/rk35/rk3568_ddr_1056MHz_v1.13.bin
-+    $ make powkiddy-x55-rk3566_defconfig
-+    $ make
-+
-+This will build ``u-boot-rockchip.bin`` which can be written to an SD
-+card.
-+
-+Image installation
-+------------------
-+
-+Write the ``u-boot-rockchip.bin`` to an SD card or the internal eMMC
-+offset 32kb from the start.
-+
-+.. code-block:: bash
-+
-+    $ dd if=u-boot-rockchip.bin of=/dev/mmcblk0 bs=512 seek=64
++See :doc:`../rockchip/devicetree/rockchip` for building and flashing
++instructions.
+diff --git a/doc/board/rockchip/rockchip.rst b/doc/board/rockchip/rockchip.rst
+index 18d0b6f089..4e290cecdc 100644
+--- a/doc/board/rockchip/rockchip.rst
++++ b/doc/board/rockchip/rockchip.rst
+@@ -98,6 +98,7 @@ List of mainline supported Rockchip boards:
+      - Pine64 SOQuartz on Blade (soquartz-blade-rk3566)
+      - Pine64 SOQuartz on CM4-IO (soquartz-cm4-rk3566)
+      - Pine64 SOQuartz on Model A (soquartz-model-a-rk3566)
++     - Powkiddy X55 (powkiddy-x55-rk3566)
+      - Radxa CM3 IO Board (radxa-cm3-io-rk3566)
+ 
+ * rk3568
 diff --git a/include/configs/powkiddy-x55-rk3566.h b/include/configs/powkiddy-x55-rk3566.h
 new file mode 100644
-index 0000000000..4b25c6a877
+index 0000000000..a25b6de455
 --- /dev/null
 +++ b/include/configs/powkiddy-x55-rk3566.h
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,14 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +
 +#ifndef __POWKIDDY_X55_RK3566_H
@@ -1420,52 +1376,8 @@ index 0000000000..4b25c6a877
 +			"stdout=serial,vidconsole\0" \
 +			"stderr=serial,vidconsole\0"
 +
++#define RK_DNL_ADC_CHAN		0
++
 +#endif
 -- 
 2.34.1
-
-next             reply	other threads:[~2023-12-05 21:39 UTC|newest]
-
-Thread overview: 3+ messages / expand[flat|nested]  mbox.gz  Atom feed  top
-2023-12-05 21:39 Chris Morgan [this message]
-2023-12-05 22:48 ` [PATCH] board: rockchip: add Powkiddy X55 Jonas Karlman
-2023-12-06 14:11   ` Chris Morgan
-find likely ancestor, descendant, or conflicting patches for this message:
-dfblob:1be08c5fd dfblob:baa51349f dfblob:531e547e7 dfblob:9e38bab6e
-dfblob:2e3998a65 dfblob:4786b19fd dfblob:a97da8ae5 dfblob:a7b3ed4d0
-dfblob:2c83cd6ee dfblob:55c8c16aa dfblob:5c8d7e2bc dfblob:aa29df04d
-dfblob:dd4bce998 dfblob:b0115a73d dfblob:66d02944c dfblob:4b25c6a87
-
-	(help)
-Reply instructions:
-
-You may reply publicly to this message via plain-text email
-using any one of the following methods:
-
-* Save the following mbox file, import it into your mail client,
-  and reply-to-all from there: mbox
-
-  Avoid top-posting and favor interleaved quoting:
-  https://en.wikipedia.org/wiki/Posting_style#Interleaved_style
-
-* Reply using the --to, --cc, and --in-reply-to
-  switches of git-send-email(1):
-
-  git send-email \
-    --in-reply-to=20231205213929.95324-1-macroalpha82@gmail.com \
-    --to=macroalpha82@gmail.com \
-    --cc=kever.yang@rock-chips.com \
-    --cc=macromorgan@hotmail.com \
-    --cc=philipp.tomsich@vrull.eu \
-    --cc=sjg@chromium.org \
-    --cc=u-boot@lists.denx.de \
-    /path/to/YOUR_REPLY
-
-  https://kernel.org/pub/software/scm/git/docs/git-send-email.html
-
-* If your mail client supports setting the In-Reply-To header
-  via mailto: links, try the mailto: link
-Be sure your reply has a Subject: header at the top and a blank line before the message body.
-This is a public inbox, see mirroring instructions
-for how to clone and mirror all data and code used for this inbox;
-as well as URLs for NNTP newsgroup(s).
