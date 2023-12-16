@@ -34,15 +34,11 @@ PARTUUID="$($HOST_DIR/bin/uuidgen)"
 install -d "$BINARIES_DIR/extlinux/"
 install -d "$BINARIES_DIR/rockchip/"
 
-echo "NO NO NO - fix kernel"
-DTB_SOURCE_DIR="output/build/linux-custom/arch/arm64/boot/dts/rockchip"
+DTB_SOURCE_DIR="output/build/linux-custom/arch/arm64/boot/dts/"
 
-echo "NO NO NO - DNR DTBs"
-DEVICE_DTB="rk3566-powkiddy-x55 rk3566-anbernic-rg353ps rk3566-anbernic-rg353vs rk3566-anbernic-rg503 rk3566-anbernic-rg353p rk3566-anbernic-rg353v rk3566-powkiddy-rgb30 rk3566-powkiddy-rk2023" 
-
-for DTB in ${DEVICE_DTB} ; do 
-    echo "    Copying $DTB_SOURCE_DIR/${DTB}.dtb to $BINARIES_DIR/rockchip"
-    cp $DTB_SOURCE_DIR/${DTB}.dtb $BINARIES_DIR/rockchip 
+for DTB in ${BR2_LINUX_KERNEL_INTREE_DTS_NAME} ; do 
+    echo "    Copying $DTB_SOURCE_DIR/${DTB}.dtb to $BINARIES_DIR"
+    cp $DTB_SOURCE_DIR/${DTB}.dtb $BINARIES_DIR/ 
 done
 
 sed -e "$(generic_getty)" \
