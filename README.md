@@ -29,17 +29,15 @@ Various other branches may appear from time to time as experiments are done.
 
 # Configurations
 
-BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the purposes here, each configuration will have an additional field describing additional features of note - `jebrish_[device]_[feature]_deconfig`.  Consistent with this, the actual "board"-specific files will appear in `board/jebrish/device_feature` with reference to common files in `board/jebrish/common` and `board/jebrish/[device]_common`.
+BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the purposes here, each configuration will have an additional field describing additional features of note - `jebrish_[device]_[feature]_deconfig`.  Consistent with this, the actual "board"-specific files will appear in `board/jebrish/`.
 
-[**jebrish_rg353x_basic_defconfig**](board/jebrish/rg353x_basic/readme.md) - this is a basic real-world configuration.  It has a non-volatile filesystem, Wayland / Weston graphics, and WiFi.
+**jebrish_rk3566_handheld_gui_defconfig** - this is a real-world configuration for generic rk3566 handhelds including Anbernic RGxx3-series, Powkiddy RGB30, X55 and R2023.  It has a non-volatile filesystem, Wayland / Weston graphics, and WiFi.
 
-[**jebrish_rg353x_minwifi_defconfig**](board/jebrish/rg353x_minwifi/readme.md) - minimal wifi system. Builds on the `minfs` variation.  Adds `wpa_supplicant`, `dhcpd`, etc to the build.  With a tiny bit of external config, the system will connect to network on boot.  The network details can be set by editing `/etc/wpa_supplicant.conf`.  `DropBear` is added to provide an ssh server and mDNS so the device can be found by name on the network.
+**jebrish_rk3566_handheld_headless_defconfig** - minimal system with WiFi and networking for RK3566-based handhelds.  With a tiny bit of external config, the system will connect to network on boot.  The network details can be set by editing `/etc/wpa_supplicant.conf`.  `DropBear` is added to provide an ssh server and mDNS so the device can be found by name on the network.
 
-[**jebrish_rg353x_minfs_defconfig**](board/jebrish/rg353x_minfs/readme.md) - minimal configuration extended with a large sd-based non-volatile filesystem.  Expands the `rootfs` to the full size of the media on first use.  Uses `switch_root` in /init.  The filesystem is `ext4` and is mounted read-write.  You can also modify it on a host machine.
+**jebrish_rk3566_handheld_minimal_defconfig** - minimal configuration for RK3566-based handhelds. It supplies just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
-[**jebrish_rg353x_mingraph_defconfig**](board/jebrish/rg353x_mingraph/readme.md) - minimal configuration extended with Wayland / Weston. Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.  `kmc`
-
-[**jebrish_rg353x_minimal_defconfig**](board/jebrish/rg353x_minimal/readme.md) - minimal configuration for RK3566-based handhelds like the Anbernic RG353/p/v/m. It supplies enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
+There are also configurations for the Powkiddy X55 which has a slightly different design. 
 
 # Building
 
@@ -48,7 +46,7 @@ Build Prerequisites are set out in the BuildRoot [manual](https://buildroot.org/
 On a machine set up to build BuildRoot, select a config, and run a command like this:
 
 ```
-make jebrish_rg353x_minimal_defconfig
+make jebrish_rk3566_handheld_gui_defconfig
 make
 ```
 
