@@ -5,7 +5,7 @@ echo "    TARGET_DIR: $TARGET_DIR"
 echo "    HOST_DIR: $HOST_DIR"
 echo "    BINARIES_DIR: $BINARIES_DIR"
 
-export -p
+# export -p
 
 linux_image()
 {
@@ -29,7 +29,12 @@ generic_getty()
 	fi
 }
 
-PARTUUID="$($HOST_DIR/bin/uuidgen)"
+# Originally, the partuuid was created here...
+# PARTUUID="$($HOST_DIR/bin/uuidgen)"
+
+# PARTUUID=$(dumpe2fs "$BINARIES_DIR/rootfs.ext2" 2>/dev/null | sed -n 's/^Filesystem UUID: *\(.*\)/\1/p')
+
+# echo "    PARTUUID: $PARTUUID"
 
 install -d "$BINARIES_DIR/extlinux/"
 install -d "$BINARIES_DIR/rockchip/"
@@ -41,12 +46,12 @@ for DTB in ${BR2_LINUX_KERNEL_INTREE_DTS_NAME} ; do
     cp $DTB_SOURCE_DIR/${DTB}.dtb $BINARIES_DIR/ 
 done
 
-sed -e "$(generic_getty)" \
-	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
-	-e "s/%PARTUUID%/$PARTUUID/g" \
-	"board/jebrish/extlinux_configs/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
+# sed -e "$(generic_getty)" \
+# 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
+# #	-e "s/%PARTUUID%/$PARTUUID/g" \
+# 	"board/jebrish/extlinux_configs/extlinux.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
-sed -e "s/%PARTUUID%/$PARTUUID/g" \
-	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
-    "board/jebrish/genimage_configs/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
+# sed -e "s/%LINUXIMAGE%/$(linux_image)/g" \
+# #   -e "s/%PARTUUID%/$PARTUUID/g" \
+#     "board/jebrish/genimage_configs/genimage.cfg" > "$BINARIES_DIR/genimage.cfg"
 
