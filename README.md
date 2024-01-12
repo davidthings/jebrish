@@ -4,6 +4,8 @@
 <image src="readme_images/powkiddy_x55.jpg" style="width: 23%; height: auto;">
 <image src="readme_images/powkiddy_rgb30.jpg" style="width: 15%; height: auto;">
 <image src="readme_images/rg353m_glamour.webp" style="width: 15%; height: auto;">
+<image src="readme_images/zero3w_01.webp" style="width: 10%; height: auto;">
+
 
 This is a fork of the [BuildRoot](https://buildroot.org/) project with some settings / config for RK3566-based handheld gaming devices.
 
@@ -17,7 +19,7 @@ BuildRoot provides a compact and well understood environment in which to do this
 
 But of course one can also work with JELOS directly!
 
-Many variations are provided, with varying degrees of functionality.  The most minimal configuration is `jebrish_rg353x_minimal_defconfig` which is just enough to boot and log in.  The most functional is `jebrish_rg353x_minwifi_defconfig` which adds wifi and DHCP. 
+Many variations are provided, with varying degrees of functionality.  The most minimal configuration is `jebrish_[device]_minimal_defconfig` which is just enough to boot and log in.  The most functional is `jebrish_[device]_gui_defconfig` which adds gui, wifi and DHCP. 
 
 # Branches
 
@@ -38,6 +40,11 @@ BuildRoot configurations are of the form `[company]_[device]_deconfig`.  For the
 **jebrish_rk3566_handheld_minimal_defconfig** - minimal configuration for RK3566-based handhelds. It supplies just enough to boot and log in.  However since this is a minimal configuration, you'll need some extra hardware to make it useful.  Either you'll need to solder in a USB-UART in the case of UART console, or you'll need a USB keyboard in the case of Display/HDMI console.
 
 There are also configurations for the Powkiddy X55 which has a slightly different design. 
+
+**jebrish_rk3566_x55_minimal_defconfig**
+
+**jebrish_rk3566_radxa_zero_3w_minimal_defconfig**
+
 
 # Building
 
@@ -165,9 +172,10 @@ These files are grouped by config variation since different variations have diff
 - working nicely
 
 **Powkiddy X55**
-- no display as yet
-- no WiFi
-- not recommended to use yet
+- working nicely
+
+**Radxa Zero 3W**
+- minimal config works 
 
 # Further Work
 
