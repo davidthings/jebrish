@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-BOTAN_VERSION = 2.19.3
+BOTAN_VERSION = 3.2.0
 BOTAN_SOURCE = Botan-$(BOTAN_VERSION).tar.xz
 BOTAN_SITE = http://botan.randombit.net/releases
 BOTAN_LICENSE = BSD-2-Clause
@@ -65,6 +65,11 @@ endif
 ifeq ($(BR2_PACKAGE_SQLITE),y)
 BOTAN_DEPENDENCIES += sqlite
 BOTAN_CONF_OPTS += --with-sqlite
+endif
+
+ifeq ($(BR2_PACKAGE_TROUSERS),y)
+BOTAN_DEPENDENCIES += trousers
+BOTAN_CONF_OPTS += --with-tpm
 endif
 
 ifeq ($(BR2_PACKAGE_XZ),y)
