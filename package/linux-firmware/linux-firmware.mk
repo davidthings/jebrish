@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LINUX_FIRMWARE_VERSION = 20231030
+LINUX_FIRMWARE_VERSION = 20231211
 LINUX_FIRMWARE_SOURCE = linux-firmware-$(LINUX_FIRMWARE_VERSION).tar.xz
 LINUX_FIRMWARE_SITE = $(BR2_KERNEL_MIRROR)/linux/kernel/firmware
 LINUX_FIRMWARE_INSTALL_IMAGES = YES
@@ -51,6 +51,12 @@ LINUX_FIRMWARE_FILES += \
 	s5p-mfc-v8.fw
 # No license file; the license is in the file WHENCE
 # which is installed unconditionally
+endif
+
+# Amlogic SoC Bluetooth
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_AMLOGIC),y)
+LINUX_FIRMWARE_FILES += amlogic/bluetooth/*.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENSE.amlogic
 endif
 
 # Intel Wireless Bluetooth
@@ -168,6 +174,13 @@ endif
 ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_RTL_RTW88),y)
 LINUX_FIRMWARE_FILES += \
 	rtw88/rtw*.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.rtlwifi_firmware.txt
+endif
+
+# rtw89
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_RTL_RTW89),y)
+LINUX_FIRMWARE_FILES += \
+	rtw89/rtw*.bin
 LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.rtlwifi_firmware.txt
 endif
 
@@ -373,6 +386,32 @@ endif
 ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_MEDIATEK_MT76X2E),y)
 LINUX_FIRMWARE_FILES += mediatek/mt7662.bin mediatek/mt7662_rom_patch.bin
 LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.ralink_a_mediatek_company_firmware
+endif
+
+# MT7921
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_MEDIATEK_MT7921),y)
+LINUX_FIRMWARE_FILES += mediatek/WIFI_MT7961_patch_mcu_1_2_hdr.bin \
+			mediatek/WIFI_RAM_CODE_MT7961_1.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.mediatek
+endif
+
+# Mediatek MT7921 Bluetooth
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_MEDIATEK_MT7921_BT),y)
+LINUX_FIRMWARE_FILES += mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.mediatek
+endif
+
+# MT7922
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_MEDIATEK_MT7922),y)
+LINUX_FIRMWARE_FILES += mediatek/WIFI_MT7922_patch_mcu_1_1_hdr.bin \
+			mediatek/WIFI_RAM_CODE_MT7922_1.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.mediatek
+endif
+
+# Mediatek MT7922 Bluetooth
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_MEDIATEK_MT7922_BT),y)
+LINUX_FIRMWARE_FILES += mediatek/BT_RAM_CODE_MT7922_1_1_hdr.bin
+LINUX_FIRMWARE_ALL_LICENSE_FILES += LICENCE.mediatek
 endif
 
 # qca6174
@@ -807,6 +846,12 @@ endif
 
 ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_CX231XX),y)
 LINUX_FIRMWARE_FILES += v4l-cx231xx-avcore-01.fw
+# No license file; the license is in the file WHENCE
+# which is installed unconditionally
+endif
+
+ifeq ($(BR2_PACKAGE_LINUX_FIRMWARE_CX23885),y)
+LINUX_FIRMWARE_FILES += v4l-cx23885-avcore-01.fw
 # No license file; the license is in the file WHENCE
 # which is installed unconditionally
 endif
