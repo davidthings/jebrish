@@ -1,0 +1,11 @@
+diff -rupN linux-5.10.162/arch/arm64/boot/dts/rockchip/Makefile.orig linux-5.10.162/arch/arm64/boot/dts/rockchip/Makefile
+--- linux-5.10.162/arch/arm64/boot/dts/rockchip/Makefile.orig	2024-01-18 21:31:55.917420316 -0800
++++ linux-5.10.162/arch/arm64/boot/dts/rockchip/Makefile	2024-01-18 21:33:12.489828963 -0800
+@@ -41,6 +41,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-ro
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock960.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64-v2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3566-radxa-zero-3w.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire-excavator.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-rock-pi-n10.dtb
