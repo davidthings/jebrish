@@ -12,7 +12,7 @@ MICROPYTHON_SOURCE = micropython-$(MICROPYTHON_VERSION).tar.xz
 # and most of the copied code is not used in the unix build.
 MICROPYTHON_LICENSE = MIT, BSD-1-Clause, BSD-3-Clause, Zlib
 MICROPYTHON_LICENSE_FILES = LICENSE
-MICROPYTHON_DEPENDENCIES = host-pkgconf libffi host-python3
+MICROPYTHON_DEPENDENCIES = host-python3
 MICROPYTHON_CPE_ID_VENDOR = micropython
 
 # Use fallback implementation for exception handling on architectures that don't
@@ -36,14 +36,21 @@ MICROPYTHON_MAKE_OPTS += \
 	LDFLAGS_EXTRA="$(TARGET_LDFLAGS)" \
 	CWARN=
 
+ifeq ($(BR2_PACKAGE_LIBFFI),y)
+MICROPYTHON_DEPENDENCIES += host-pkgconf libffi
+MICROPYTHON_MAKE_OPTS += MICROPY_PY_FFI=1
+else
+MICROPYTHON_MAKE_OPTS += MICROPY_PY_FFI=0
+endif
+
 define MICROPYTHON_BUILD_CMDS
-	$(MICROPYTHON_MAKE_ENV) $(MAKE) -C $(@D)/mpy-cross
-	$(MICROPYTHON_MAKE_ENV) $(MAKE) -C $(@D)/ports/unix \
+	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)/mpy-cross
+	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)/ports/unix \
 		$(MICROPYTHON_MAKE_OPTS)
 endef
 
 define MICROPYTHON_INSTALL_TARGET_CMDS
-	$(MICROPYTHON_MAKE_ENV) $(MAKE) -C $(@D)/ports/unix \
+	$(TARGET_MAKE_ENV) $(MAKE) -C $(@D)/ports/unix \
 		$(MICROPYTHON_MAKE_OPTS) \
 		DESTDIR=$(TARGET_DIR) \
 		PREFIX=/usr \

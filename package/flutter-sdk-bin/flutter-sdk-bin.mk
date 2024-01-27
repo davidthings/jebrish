@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FLUTTER_SDK_BIN_VERSION = 3.16.5
+FLUTTER_SDK_BIN_VERSION = 3.16.8
 FLUTTER_SDK_BIN_SITE = https://storage.googleapis.com/flutter_infra_release/releases/stable/linux
 FLUTTER_SDK_BIN_SOURCE = flutter_linux_$(FLUTTER_SDK_BIN_VERSION)-stable.tar.xz
 FLUTTER_SDK_BIN_LICENSE = BSD-3-Clause
@@ -41,11 +41,8 @@ define HOST_FLUTTER_SDK_BIN_CONFIGURE_CMDS
 	$(HOST_FLUTTER_SDK_BIN_ENV) $(@D)/bin/dart --disable-analytics
 endef
 
-# Remove the cache, as we will run precache after setting up flutter and dart
-# with the new config options.
 define HOST_FLUTTER_SDK_BIN_BUILD_CMDS
 	mkdir -p $(HOST_FLUTTER_SDK_BIN_SDK)
-	rm -rf $(HOST_FLUTTER_SDK_BIN_SDK)/.pub-cache
 	cd $(@D) && \
 		$(HOST_FLUTTER_SDK_BIN_ENV) $(@D)/bin/flutter precache;
 endef
@@ -104,4 +101,4 @@ HOST_FLUTTER_SDK_BIN_DART_BIN = \
 $(eval $(host-generic-package))
 
 # For target packages to locate said pub-cache
-FLUTTER_SDK_BIN_PUB_CACHE = $(HOST_FLUTTER_SDK_BIN_SDK)/.pub-cache
+FLUTTER_SDK_BIN_PUB_CACHE = $(DL_DIR)/br-flutter-pub-cache
