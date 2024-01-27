@@ -46,7 +46,7 @@ echo "    PARTUUID: $PARTUUID"
 sed -e "$(generic_getty)" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
 	-e "s/%PARTUUID%/$PARTUUID/g" \
-	"board/jebrish/extlinux_configs/extlinux_no_initramfs.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
+	"board/jebrish/extlinux_configs/extlinux_no_uuid.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
 sed -e "s/%PARTUUID%/$PARTUUID/g" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
