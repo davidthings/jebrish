@@ -1,0 +1,13 @@
+--- libdrm-2.4.120/xf86drmMode.h.orig	2024-01-28 11:10:24.709717930 -0800
++++ libdrm-2.4.120/xf86drmMode.h	2024-01-28 11:10:42.081671606 -0800
+@@ -40,8 +40,8 @@
+ extern "C" {
+ #endif
+ 
+-#include <drm.h>
+-#include <drm_mode.h>
++#include <drm/drm.h>
++#include <drm/drm_mode.h>
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdint.h>

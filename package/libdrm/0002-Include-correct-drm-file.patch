@@ -1,0 +1,11 @@
+--- libdrm-2.4.120/xf86drm.h.orig	2024-01-28 11:10:08.121762108 -0800
++++ libdrm-2.4.120/xf86drm.h	2024-01-28 11:10:55.613635482 -0800
+@@ -37,7 +37,7 @@
+ #include <stdarg.h>
+ #include <sys/types.h>
+ #include <stdint.h>
+-#include <drm.h>
++#include <drm/drm.h>
+ 
+ #if defined(__cplusplus)
+ extern "C" {
