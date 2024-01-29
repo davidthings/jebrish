@@ -6,23 +6,67 @@
 
 #
 #  When using DRM - xf86drm.h and xf86drmMode.h point to the wrong drm directory
-#  they need `#include <drm/drm.h>`
+#  they need `#include <drm/drm.h>`  This is patched in libDRM
 #
+
+# This is what worked before
+# RAYLIB_CONF_OPTS = -DPLATFORM=DRM -DBUILD_EXAMPLES=ON -DMAKE_INSTALL_PREFIX=/usr
+# # RAYLIB_CONF_OPTS = -DUSE_WAYLAND=OFF -DBUILD_EXAMPLES=ON -DMAKE_INSTALL_PREFIX=/usr \
+# #                   -DOPENGL_VERSION=2.1 -DGLFW_BUILD_X11=ON 
+# RAYLIB_DEPENDENCIES = mesa3d libgl wayland libxkbcommon wayland-protocols
+
 
 RAYLIB_VERSION = 5.0
 RAYLIB_SOURCE = $(RAYLIB_VERSION).tar.gz
 RAYLIB_SITE = https://github.com/raysan5/raylib/archive/refs/tags
 RAYLIB_INSTALL_STAGING = YES
 RAYLIB_INSTALL_TARGET = YES
-RAYLIB_CONF_OPTS = -DPLATFORM=DRM -DBUILD_EXAMPLES=ON -DMAKE_INSTALL_PREFIX=/usr
-# RAYLIB_CONF_OPTS = -DUSE_WAYLAND=OFF -DBUILD_EXAMPLES=ON -DMAKE_INSTALL_PREFIX=/usr \
-#                   -DOPENGL_VERSION=2.1 -DGLFW_BUILD_X11=ON 
-RAYLIB_DEPENDENCIES = mesa3d libgl wayland libxkbcommon wayland-protocols
+
+RAYLIB_CONF_OPTS = -DMAKE_INSTALL_PREFIX=/usr 
+
+RAYLIB_DEPENDENCIES = mesa3d wayland wayland-protocols
+
+ifeq ($(BR2_RAYLIB_BACKEND_DRM),y)
+	RAYLIB_CONF_OPTS += -DPLATFORM=DRM -DOPENGL_VERSION="ES 2.0"
+	RAYLIB_DEPENDENCIES += libegl
+endif
+
+ifeq ($(BR2_RAYLIB_BACKEND_X11),y)
+	RAYLIB_CONF_OPTS += -DGLFW_BUILD_X11=ON  -DPLATFORM=Desktop -DOPENGL_VERSION=2.1
+	RAYLIB_DEPENDENCIES += libxkbcommon libgl 
+endif
+
+ifeq ($(BR2_RAYLIB_BUILD_EXAMPLES),y)
+	RAYLIB_CONF_OPTS += -DBUILD_EXAMPLES=ON
+else 
+	RAYLIB_CONF_OPTS += -DBUILD_EXAMPLES=OFF
+endif
+
+define RAYLIB_PRE_BUILD_HOOK
+#    export FIND_WIDTH_TEXT="const int screenWidth = 800;"
+#    export REPLACE_WIDTH_TEXT="const int screenWidth = 640;"
+#    export FIND_HEIGHT_TEXT="const int screenHeight = 450;"
+#    export REPLACE_HEIGHT_TEXT="const int screenHeight = 480;"
+#
+#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/$${FIND_WIDTH_TEXT}/$${REPLACE_WIDTH_TEXT}/g" {} +
+#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/$${FIND_HEIGHT_TEXT}/$${REPLACE_HEIGHT_TEXT}/g" {} +
+
+    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenWidth = 800/const int screenWidth = 640/g" {} +
+    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenHeight = 450/const int screenHeight = 480/g" {} +
+
+
+endef
+
+# Add the hook to the package's hooks
+RAYLIB_PRE_BUILD_HOOKS += RAYLIB_PRE_BUILD_HOOK
 
 define RAYLIB_INSTALL_TARGET_CMDS
     cp -R $(@D)/raylib/lib* $(TARGET_DIR)/usr/lib
     $(INSTALL) -d $(TARGET_DIR)/usr/raylib
-    cp -R $(@D)/examples/* $(TARGET_DIR)/usr/raylib
+
+	# if [[$(BR2_RAYLIB_BUILD_EXAMPLES) == "y" ]]; then
+    	cp -R $(@D)/examples/* $(TARGET_DIR)/usr/raylib
+	# fi
 endef
 
 $(eval $(cmake-package))
