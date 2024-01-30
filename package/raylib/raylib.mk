@@ -43,13 +43,8 @@ else
 endif
 
 define RAYLIB_PRE_BUILD_HOOK
-#    export FIND_WIDTH_TEXT="const int screenWidth = 800;"
-#    export REPLACE_WIDTH_TEXT="const int screenWidth = 640;"
-#    export FIND_HEIGHT_TEXT="const int screenHeight = 450;"
-#    export REPLACE_HEIGHT_TEXT="const int screenHeight = 480;"
-#
-#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/$${FIND_WIDTH_TEXT}/$${REPLACE_WIDTH_TEXT}/g" {} +
-#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/$${FIND_HEIGHT_TEXT}/$${REPLACE_HEIGHT_TEXT}/g" {} +
+
+    find $(@D)/examples -name '*.c' -exec grep -l '#define GLSL_VERSION\s\+330' {} + -exec sed -i 's/#define GLSL_VERSION\s\+330/#define GLSL_VERSION            120/' {} +
 
     find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenWidth = 800/const int screenWidth = 640/g" {} +
     find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenHeight = 450/const int screenHeight = 480/g" {} +
