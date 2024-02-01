@@ -1,0 +1,18 @@
+config BR2_PACKAGE_RAYMINAPP
+	bool "rayminapp"
+ 	depends on BR2_PACKAGE_RAYLIB
+	help
+	  Raylib Minimal Application
+
+if BR2_PACKAGE_RAYMINAPP
+
+    config BR2_RAYMINAPP_WIDTH
+        int "Application Width"
+        default 640
+    
+    config BR2_RAYMINAPP_HEIGHT
+        int "Application Height"
+        default 480
+
+endif # BR2_PACKAGE_RAYMINAPP
+

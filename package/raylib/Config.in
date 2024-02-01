@@ -27,6 +27,7 @@ endif # BR2_RAYLIB_BUILD_EXAMPLES
 
 choice
     prompt "Backend"
+    default BR2_RAYLIB_BACKEND_DRM
 
 config BR2_RAYLIB_BACKEND_DRM
     bool "DRM"
