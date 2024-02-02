@@ -31,6 +31,7 @@ endif
 define RAYMINAPP_PRE_BUILD_HOOK
 
     find $(@D) -type f -name '*.cpp' -exec sed -i "s/#define GLSL_VERSION 330/#define GLSL_VERSION 100/g" {} +
+    find $(@D) -type f -name '*.cpp' -exec sed -i "s/#define GLSL_VERSION 120/#define GLSL_VERSION 100/g" {} +
 
     find $(@D) -type f -name '*.cpp' -exec sed -i "s/const int screenWidth = 800/const int screenWidth = $(BR2_RAYMINAPP_WIDTH)/g" {} +
     find $(@D) -type f -name '*.cpp' -exec sed -i "s/const int screenHeight = 450/const int screenHeight = $(BR2_RAYMINAPP_HEIGHT)/g" {} +
