@@ -11,20 +11,29 @@ GCC_TARGET_SOURCE = $(GCC_SOURCE)
 # Use the same archive as gcc-initial and gcc-final
 GCC_TARGET_DL_SUBDIR = gcc
 
-GCC_TARGET_DEPENDENCIES = gmp mpfr mpc
+GCC_TARGET_DEPENDENCIES = gcc-final gmp mpfr mpc
 
 # First, we use HOST_GCC_COMMON_MAKE_OPTS to get a lot of correct flags (such as
 # the arch, abi, float support, etc.) which are based on the config used to
 # build the internal toolchain
 GCC_TARGET_CONF_OPTS = $(HOST_GCC_COMMON_CONF_OPTS)
 # Then, we modify incorrect flags from HOST_GCC_COMMON_CONF_OPTS
+# Dumped these
+# --with-build-sysroot=$(STAGING_DIR) \
+# --with-gmp=$(STAGING_DIR) \
+# --with-mpc=$(STAGING_DIR) \
+# --with-mpfr=$(STAGING_DIR)
+
 GCC_TARGET_CONF_OPTS += \
+	--build=$(uname -m) \
+    --host=$(GNU_TARGET_NAME) \
+	--target=$(GNU_TARGET_NAME) \
 	--with-sysroot=/ \
-	--with-build-sysroot=$(STAGING_DIR) \
-	--disable-__cxa_atexit \
-	--with-gmp=$(STAGING_DIR) \
-	--with-mpc=$(STAGING_DIR) \
-	--with-mpfr=$(STAGING_DIR)
+    --with-gmp=/ \
+    --with-mpc=/ \
+    --with-mpfr=/ \
+	--disable-__cxa_atexit 
+
 # Then, we force certain flags that may appear in HOST_GCC_COMMON_CONF_OPTS
 GCC_TARGET_CONF_OPTS += \
 	--disable-libquadmath \
@@ -33,7 +42,7 @@ GCC_TARGET_CONF_OPTS += \
 	--disable-lto
 # Finally, we add some of our own flags
 GCC_TARGET_CONF_OPTS += \
-	--enable-languages=c \
+	--enable-languages=c,c++ \
 	--disable-boostrap \
 	--disable-libgomp \
 	--disable-nls \
