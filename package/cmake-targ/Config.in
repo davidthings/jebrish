@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CMAKE_TARG
+	bool cmake-targ
+	help
+	  cmake target support
+
