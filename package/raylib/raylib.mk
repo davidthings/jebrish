@@ -28,6 +28,7 @@ RAYLIB_DEPENDENCIES = mesa3d wayland wayland-protocols
 
 ifeq ($(BR2_RAYLIB_BACKEND_DRM),y)
 	RAYLIB_CONF_OPTS += -DPLATFORM=DRM -DOPENGL_VERSION="ES 2.0"
+# -DGRAPHICS_API_OPENGL_33=1
 	RAYLIB_DEPENDENCIES += libegl
 endif
 
@@ -44,9 +45,9 @@ endif
 
 define RAYLIB_PRE_BUILD_HOOK
 
-    find $(@D)/examples -name '*.c' -exec grep -l '#define GLSL_VERSION\s\+330' {} + -exec sed -i 's/#define GLSL_VERSION\s\+330/#define GLSL_VERSION            120/' {} +
-    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenWidth = 800/const int screenWidth = $(BR2_RAYLIB_EXAMPLE_WIDTH)/g" {} +
-    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenHeight = 450/const int screenHeight = $(BR2_RAYLIB_EXAMPLE_HEIGHT)/g" {} +
+#    find $(@D)/examples -name '*.c' -exec grep -l '#define GLSL_VERSION\s\+330' {} + -exec sed -i 's/#define GLSL_VERSION\s\+330/#define GLSL_VERSION            120/' {} +
+#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenWidth = 800/const int screenWidth = $(BR2_RAYLIB_EXAMPLE_WIDTH)/g" {} +
+#    find $(@D)/examples -type f -name '*.c' -exec sed -i "s/const int screenHeight = 450/const int screenHeight = $(BR2_RAYLIB_EXAMPLE_HEIGHT)/g" {} +
 
 endef
 

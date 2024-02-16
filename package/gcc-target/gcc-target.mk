@@ -62,7 +62,7 @@ GCC_TARGET_POST_INSTALL_TARGET_HOOKS += GCC_TARGET_INSTALL_HEADERS
 
 # Install standard C libraries (from glibc)
 GCC_TARGET_GLIBC_LIBS = \
-	*crt*.o *_nonshared.a \
+	*crt*.o *_nonshared.a *.a \
 	libBrokenLocale.so libanl.so libbfd.so libc.so libcrypt.so libdl.so \
 	libm.so libnss_compat.so libnss_db.so libnss_files.so libnss_hesiod.so \
 	libpthread.so libresolv.so librt.so libthread_db.so libutil.so

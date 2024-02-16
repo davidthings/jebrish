@@ -1,0 +1,57 @@
+--- raylib-5.0/src/platforms/rcore_drm.c.orig	2024-02-15 14:13:10.377050606 -0800
++++ raylib-5.0/src/platforms/rcore_drm.c	2024-02-15 14:10:38.873463088 -0800
+@@ -546,9 +546,6 @@ void PollInputEvents(void)
+     CORE.Input.Keyboard.keyPressedQueueCount = 0;
+     CORE.Input.Keyboard.charPressedQueueCount = 0;
+ 
+-    // Reset key repeats
+-    for (int i = 0; i < MAX_KEYBOARD_KEYS; i++) CORE.Input.Keyboard.keyRepeatInFrame[i] = 0;
+-
+     // Reset last gamepad button/axis registered state
+     CORE.Input.Gamepad.lastButtonPressed = 0;       // GAMEPAD_BUTTON_UNKNOWN
+     //CORE.Input.Gamepad.axisCount = 0;
+@@ -574,6 +571,7 @@ void PollInputEvents(void)
+     {
+         CORE.Input.Mouse.previousButtonState[i] = CORE.Input.Mouse.currentButtonState[i];
+         CORE.Input.Mouse.currentButtonState[i] = platform.currentButtonStateEvdev[i];
++        CORE.Input.Touch.currentTouchState[i] = platform.currentButtonStateEvdev[i];
+     }
+ 
+     // Register gamepads buttons events
+@@ -602,7 +600,7 @@ void PollInputEvents(void)
+     if (!platform.eventKeyboardMode) ProcessKeyboard();
+ 
+     // NOTE: Mouse input events polling is done asynchronously in another pthread - EventThread()
+-    // NOTE: Gamepad (Joystick) input events polling is done asynchonously in another pthread - GamepadThread()
++    // NOTE: Gamepad (Joystick) input events polling is done asynchronously in another pthread - GamepadThread()
+ #endif
+ 
+     // Handle the mouse/touch/gestures events:
+@@ -969,7 +967,8 @@ int InitPlatform(void)
+ 
+     const EGLint framebufferAttribs[] =
+     {
+-        EGL_RENDERABLE_TYPE, (rlGetVersion() == RL_OPENGL_ES_30)? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,      // Type of context support
++        EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,      // Type of context support
++        // EGL_RENDERABLE_TYPE, (rlGetVersion() == RL_OPENGL_ES_30)? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT,      // Type of context support
+         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,          // Don't use it on Android!
+         EGL_RED_SIZE, 8,            // RED color bit depth (alternative: 5)
+         EGL_GREEN_SIZE, 8,          // GREEN color bit depth (alternative: 6)
+@@ -1060,7 +1059,8 @@ int InitPlatform(void)
+     }
+ 
+     // Set rendering API
+-    eglBindAPI(EGL_OPENGL_ES_API);
++    // eglBindAPI(EGL_OPENGL_ES_API);
++    eglBindAPI(EGL_OPENGL_API);
+ 
+     // Create an EGL rendering context
+     platform.context = eglCreateContext(platform.device, platform.config, EGL_NO_CONTEXT, contextAttribs);
+@@ -1709,6 +1709,7 @@ static void PollKeyboardEvents(void)
+                     // Event interface: 'value' is the value the event carries. Either a relative change for EV_REL,
+                     // absolute new value for EV_ABS (joysticks ...), or 0 for EV_KEY for release, 1 for keypress and 2 for autorepeat
+                     CORE.Input.Keyboard.currentKeyState[keycode] = (event.value >= 1)? 1 : 0;
++                    CORE.Input.Keyboard.keyRepeatInFrame[keycode] = (event.value == 2)? 1 : 0;
+                     if (event.value >= 1)
+                     {
+                         CORE.Input.Keyboard.keyPressedQueue[CORE.Input.Keyboard.keyPressedQueueCount] = keycode;     // Register last key pressed
