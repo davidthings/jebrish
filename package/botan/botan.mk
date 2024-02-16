@@ -9,7 +9,7 @@ BOTAN_SOURCE = Botan-$(BOTAN_VERSION).tar.xz
 BOTAN_SITE = http://botan.randombit.net/releases
 BOTAN_LICENSE = BSD-2-Clause
 BOTAN_LICENSE_FILES = license.txt
-BOTAN_CPE_ID_VENDOR = botan_project
+BOTAN_CPE_ID_VALID = YES
 
 BOTAN_INSTALL_STAGING = YES
 
@@ -87,6 +87,10 @@ BOTAN_CONF_OPTS += --disable-altivec
 endif
 
 ifeq ($(BR2_ARM_CPU_HAS_NEON),)
+BOTAN_CONF_OPTS += --disable-neon
+endif
+
+ifeq ($(BR2_SOFT_FLOAT),y)
 BOTAN_CONF_OPTS += --disable-neon
 endif
 

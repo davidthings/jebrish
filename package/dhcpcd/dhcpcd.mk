@@ -4,13 +4,13 @@
 #
 ################################################################################
 
-DHCPCD_VERSION = 10.0.4
+DHCPCD_VERSION = 10.0.5
 DHCPCD_SOURCE = dhcpcd-$(DHCPCD_VERSION).tar.xz
 DHCPCD_SITE = https://github.com/NetworkConfiguration/dhcpcd/releases/download/v$(DHCPCD_VERSION)
 DHCPCD_DEPENDENCIES = host-pkgconf
 DHCPCD_LICENSE = BSD-2-Clause
 DHCPCD_LICENSE_FILES = LICENSE
-DHCPCD_CPE_ID_VENDOR = dhcpcd_project
+DHCPCD_CPE_ID_VALID = YES
 
 DHCPCD_CONFIG_OPTS = \
 	--libexecdir=/lib/dhcpcd \
