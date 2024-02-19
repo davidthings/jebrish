@@ -5,6 +5,7 @@ BR2_TARGET_GENERIC_HOSTNAME="JEB_RK3588"
 BR2_TARGET_GENERIC_ISSUE="JEBRISH RK3588 MINIMAL"
 BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV=y
 BR2_TARGET_GENERIC_ROOT_PASSWD="1234"
+BR2_ROOTFS_OVERLAY="board/jebrish/rootfs_overlays/rootfs-headless-no-initramfs-overlay"
 BR2_ROOTFS_POST_BUILD_SCRIPT="board/jebrish/post_build_scripts/post-build.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="board/jebrish/post_image_scripts/post-image_no_uuid.sh"
 BR2_LINUX_KERNEL=y
