@@ -1,0 +1,69 @@
+#!/bin/sh
+# devtmpfs does not get automounted for initramfs
+# /bin/mount -t devtmpfs devtmpfs /dev
+
+# use the /dev/console device node from devtmpfs if possible to not
+# confuse glibc's ttyname_r().
+# This may fail (E.G. booted with console=), and errors from exec will
+# terminate the shell, so use a subshell for the test
+# if (exec 0</dev/console) 2>/dev/null; then
+    # exec 0</dev/console
+    # exec 1>/dev/console
+    # exec 2>/dev/console
+# fi
+
+# Find the line with the "rootfs" label
+# ROOTFS_LINE=$(blkid | grep 'LABEL="rootfs"')
+
+# Extract the full partition device name (e.g., /dev/mmcblk1p2)
+# ROOTFS_PART=$(echo "$ROOTFS_LINE" | cut -d: -f1)
+
+# Extract just the device name (e.g., /dev/mmcblk1)
+# ROOTFS_DEVICE=$(echo "$ROOTFS_PART" | sed 's/p[0-9]*$//')
+
+# Extract just the partition number (e.g., 2)
+# ROOTFS_PARTNUM=$(echo "$ROOTFS_PART" | grep -o 'p[0-9]*$' | tr -d 'p')
+
+# echo "Device with 'rootfs' label : $ROOTFS_PART"
+# echo "Device name                : $ROOTFS_DEVICE"
+# echo "Partition number           : $ROOTFS_PARTNUM"
+
+# Mount the main rootfs partition
+# mkdir -p /mnt/root
+# mount -t ext4 $ROOTFS_PART /mnt/root
+
+#sync
+
+# if [ -f /mnt/root/.RELEASE_ME ]; then
+  
+#     echo "Resizing rootfs..."
+
+#     # umount -n $ROOTFS_PART
+
+#     sync
+
+#     parted -fs $ROOTFS_DEVICE print
+
+#     parted -s -a optimal -m $ROOTFS_DEVICE resizepart $ROOTFS_PARTNUM 100%
+
+#     e2fsck -f -p $ROOTFS_PART
+
+#     resize2fs $ROOTFS_PART
+
+#     e2fsck -f -p $ROOTFS_PART
+
+#     sync
+
+#     # mount -t ext4 $ROOTFS_PART /mnt/root
+
+#     rm /mnt/root/.RELEASE_ME
+
+#     sync
+
+# fi
+
+# Switch root to main.  Note linux_utils/switch_root also switches special directories/files.
+exec /sbin/init "$@"
+
+# exec switch_root /mnt/root /sbin/init "$@"
+
