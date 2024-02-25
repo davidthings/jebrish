@@ -4,7 +4,7 @@ BOARD_DIR="$(dirname $0)"
 GENIMAGE_CFG="${BINARIES_DIR}/genimage.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
 
-ROOTDRIVE="/dev/mmcblk1"
+ROOTDRIVE="/dev/mmcblk2p2"
 
 echo "Running post-image.sh"
 echo "    BOARD_DIR: $BOARD_DIR"
@@ -47,7 +47,7 @@ echo "    PARTUUID: $PARTUUID"
 
 sed -e "$(generic_getty)" \
 	-e "s/%LINUXIMAGE%/$(linux_image)/g" \
-    -e "s/%ROOTDRIVE%/$ROOTDRIVE/g" \
+	-e "s|%ROOTDRIVE%|$ROOTDRIVE|g" \
 	-e "s/%PARTUUID%/$PARTUUID/g" \
 	"board/jebrish/extlinux_configs/extlinux_no_uuid.conf" > "$BINARIES_DIR/extlinux/extlinux.conf"
 
