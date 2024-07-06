@@ -741,6 +741,7 @@ addedCSSRules.forEach(rule => styleSheet.insertRule(rule));
 function sortGrid(sortLabel){
 	let i = 0;
 	let pkgSortArray = [], sortedPkgArray = [], pkgStringSortArray = [], pkgNumSortArray = [];
+	const git_hash_regex = /[a-f,0-9]/gi;
 	const columnValues = Array.from(document.getElementsByClassName(sortLabel));
 	const columnName = document.getElementById(sortLabel);
 	let lastStyle = document.getElementById("sort-css");
@@ -765,7 +766,9 @@ function sortGrid(sortLabel){
                 pkgSortArray.push(sortArr);
         });
         pkgSortArray.forEach((listing) => {
-                if ( isNaN(parseInt(listing[1], 10)) ){
+                if ( listing[1].length >= 39 && listing[1].match(git_hash_regex).length >= 39){
+                        pkgStringSortArray.push(listing);
+		} else if ( isNaN(parseInt(listing[1], 10)) ){
                         pkgStringSortArray.push(listing);
                 } else {
                         listing[1] = parseFloat(listing[1]);
@@ -845,6 +848,13 @@ function expandField(fieldId){
 .centered {
   text-align: center;
 }
+
+ .current_version {
+   overflow: scroll;
+   width: 21ch;
+   padding: 10px 2px 10px 2px;
+ }
+
  .correct, .nopatches, .good_url, .version-good, .cpe-ok, .cve-ok {
    background: #d2ffc4;
  }
@@ -964,15 +974,13 @@ def dump_html_pkg(f, pkg):
 
     # Current version
     data_field_id = f'current_version__{pkg_css_class}'
-    if len(pkg.current_version) > 20:
-        current_version = pkg.current_version[:20] + "..."
-    else:
-        current_version = pkg.current_version
+    current_version = pkg.current_version
     f.write(f'  <div id="{data_field_id}" \
         class="centered current_version data _{pkg_css_class}">{current_version}</div>\n')
 
     # Latest version
     data_field_id = f'latest_version__{pkg_css_class}'
+    div_class = ["centered"]
     div_class.append(f'_{pkg_css_class}')
     div_class.append("latest_version data")
     if pkg.latest_version['status'] == RM_API_STATUS_ERROR:
@@ -1051,9 +1059,9 @@ def dump_html_pkg(f, pkg):
         f.write(f' <div onclick="expandField(\'{data_field_id}\')" \
         class="see-more centered cve_ignored">see all ({cve_total}) &#9662;</div>\n')
     if pkg.is_status_error("cve"):
-        for cve in pkg.cves:
+        for cve in cvecheck.CVE.sort_id(pkg.cves):
             f.write(f'   <a href="https://security-tracker.debian.org/tracker/{cve}">{cve}</a><br/>\n')
-        for cve in pkg.unsure_cves:
+        for cve in cvecheck.CVE.sort_id(pkg.unsure_cves):
             f.write(f'   <a href="https://security-tracker.debian.org/tracker/{cve}">{cve} <i>(unsure)</i></a><br/>\n')
     elif pkg.is_status_na("cve"):
         f.write(f"""    {pkg.status['cve'][1]}""")
@@ -1286,7 +1294,7 @@ def __main__():
         package_list = set([v["name"] for v in show_info_js.values() if 'name' in v])
     else:
         package_list = None
-    date = datetime.datetime.utcnow()
+    date = datetime.datetime.now(datetime.timezone.utc)
     commit = subprocess.check_output(['git', '-C', brpath,
                                       'rev-parse',
                                       'HEAD']).splitlines()[0].decode()
