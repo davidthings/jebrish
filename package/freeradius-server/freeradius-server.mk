@@ -7,7 +7,7 @@
 FREERADIUS_SERVER_VERSION = 3.2.3
 FREERADIUS_SERVER_SOURCE = \
 	freeradius-server-$(FREERADIUS_SERVER_VERSION).tar.bz2
-FREERADIUS_SERVER_SITE = ftp://ftp.freeradius.org/pub/freeradius
+FREERADIUS_SERVER_SITE = https://freeradius.org/ftp/pub/freeradius
 FREERADIUS_SERVER_LICENSE = GPL-2.0
 FREERADIUS_SERVER_LICENSE_FILES = COPYRIGHT
 FREERADIUS_SERVER_CPE_ID_VENDOR = freeradius
@@ -119,6 +119,10 @@ else
 FREERADIUS_SERVER_CONF_OPTS += --without-pcap
 endif
 
+ifeq ($(BR2_PACKAGE_LIBXCRYPT),y)
+FREERADIUS_SERVER_DEPENDENCIES += libxcrypt
+endif
+
 ifeq ($(BR2_PACKAGE_LINUX_PAM),y)
 FREERADIUS_SERVER_CONF_OPTS += --with-rlm_pam
 FREERADIUS_SERVER_DEPENDENCIES += linux-pam
@@ -140,9 +144,9 @@ else
 FREERADIUS_SERVER_CONF_OPTS += --without-rlm_cache_memcached
 endif
 
-ifeq ($(BR2_PACKAGE_MYSQL),y)
+ifeq ($(BR2_PACKAGE_MARIADB),y)
 FREERADIUS_SERVER_CONF_OPTS += --with-rlm_sql_mysql
-FREERADIUS_SERVER_DEPENDENCIES += mysql
+FREERADIUS_SERVER_DEPENDENCIES += mariadb
 else
 FREERADIUS_SERVER_CONF_OPTS += --without-rlm_sql_mysql
 endif
