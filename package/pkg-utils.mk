@@ -42,13 +42,13 @@ KCONFIG_DISABLE_OPT = $(Q)$(call KCONFIG_MUNGE_DOT_CONFIG, $(1), $(SHARP_SIGN) $
 # directory from its makefile directory, using the $(MAKEFILE_LIST)
 # variable provided by make. This is used by the *-package macros to
 # automagically find where the package is located.
-pkgdir = $(dir $(lastword $(MAKEFILE_LIST)))
+pkgdir = $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 pkgname = $(lastword $(subst /, ,$(pkgdir)))
 
 # Helper to build the extension for a package archive, based on various
 # conditions.
 # $(1): upper-case package name
-pkg_source_ext = $(BR_FMT_VERSION_$($(1)_SITE_METHOD)).tar.gz
+pkg_source_ext = $(BR_FMT_VERSION_$($(1)_SITE_METHOD))$(BR_FMT_VERSION_$($(1)_DOWNLOAD_POST_PROCESS)).tar.gz
 
 # Define extractors for different archive suffixes
 INFLATE.bz2  = $(BZCAT)
@@ -221,18 +221,12 @@ ifeq ($(BR2_PER_PACKAGE_DIRECTORIES),y)
 # $4: literal "copy" or "hardlink" to copy or hardlink files from src to dest
 define per-package-rsync
 	mkdir -p $(3)
-	$(foreach pkg,$(1),\
-		rsync -a \
-			--hard-links \
-			$(if $(filter hardlink,$(4)), \
-				--link-dest=$(PER_PACKAGE_DIR)/$(pkg)/$(2)/, \
-				$(if $(filter copy,$(4)), \
-					$(empty), \
-					$(error per-package-rsync can only "copy" or "hardlink", not "$(4)") \
-				) \
-			) \
-			$(PER_PACKAGE_DIR)/$(pkg)/$(2)/ \
-			$(3)$(sep))
+	$(if $(filter hardlink,$(4)), \
+		$(foreach pkg,$(1),\
+			rsync -a --hard-links --link-dest=$(PER_PACKAGE_DIR)/$(pkg)/$(2)/ \
+				$(PER_PACKAGE_DIR)/$(pkg)/$(2)/ $(3)$(sep)), \
+		printf "%s/$(2)/\n" $(1) | tac \
+			| rsync -a --hard-links --files-from=- --no-R -r $(PER_PACKAGE_DIR) $(3))
 endef
 
 # prepares the per-package HOST_DIR and TARGET_DIR of the current

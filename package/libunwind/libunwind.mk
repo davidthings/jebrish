@@ -4,13 +4,12 @@
 #
 ################################################################################
 
-LIBUNWIND_VERSION = 1.6.2
-LIBUNWIND_SITE = http://download.savannah.gnu.org/releases/libunwind
+LIBUNWIND_VERSION = 1.8.1
+LIBUNWIND_SITE = https://github.com/libunwind/libunwind/releases/download/v$(LIBUNWIND_VERSION)
 LIBUNWIND_INSTALL_STAGING = YES
 LIBUNWIND_LICENSE_FILES = COPYING
 LIBUNWIND_LICENSE = MIT
 LIBUNWIND_CPE_ID_VALID = YES
-LIBUNWIND_AUTORECONF = YES
 
 LIBUNWIND_CONF_OPTS = \
 	--disable-tests \
@@ -18,6 +17,7 @@ LIBUNWIND_CONF_OPTS = \
 
 ifeq ($(BR2_PACKAGE_LIBUCONTEXT),y)
 LIBUNWIND_DEPENDENCIES += libucontext
+LIBUNWIND_CONF_OPTS += LIBS=-lucontext
 endif
 
 $(eval $(autotools-package))

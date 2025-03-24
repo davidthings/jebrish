@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-RSYSLOG_VERSION = 8.2312.0
+RSYSLOG_VERSION = 8.2402.0
 RSYSLOG_SITE = http://rsyslog.com/files/download/rsyslog
 RSYSLOG_LICENSE = GPL-3.0, LGPL-3.0, Apache-2.0
 RSYSLOG_LICENSE_FILES = COPYING COPYING.LESSER COPYING.ASL20
@@ -102,8 +102,8 @@ else
 RSYSLOG_CONF_OPTS += --disable-impcap
 endif
 
-ifeq ($(BR2_PACKAGE_MYSQL),y)
-RSYSLOG_DEPENDENCIES += mysql
+ifeq ($(BR2_PACKAGE_MARIADB),y)
+RSYSLOG_DEPENDENCIES += mariadb
 RSYSLOG_CONF_OPTS += --enable-mysql
 RSYSLOG_CONF_ENV += ac_cv_prog_MYSQL_CONFIG=$(STAGING_DIR)/usr/bin/mysql_config
 else

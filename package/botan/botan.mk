@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-BOTAN_VERSION = 3.2.0
+BOTAN_VERSION = 3.3.0
 BOTAN_SOURCE = Botan-$(BOTAN_VERSION).tar.xz
 BOTAN_SITE = http://botan.randombit.net/releases
 BOTAN_LICENSE = BSD-2-Clause
@@ -48,8 +48,14 @@ else
 BOTAN_CONF_OPTS += --without-stack-protector
 endif
 
+ifeq ($(BR2_TOOLCHAIN_HAS_THREADS_NPTL),y)
+BOTAN_CONF_OPTS += --with-os-feature=threads
+else
+BOTAN_CONF_OPTS += --without-os-feature=threads
+endif
+
 ifeq ($(BR2_TOOLCHAIN_USES_UCLIBC),y)
-BOTAN_CONF_OPTS += --without-os-feature=getauxval
+BOTAN_CONF_OPTS += --without-os-feature=explicit_bzero,getauxval,getentropy
 endif
 
 ifeq ($(BR2_PACKAGE_BOOST_FILESYSTEM)$(BR2_PACKAGE_BOOST_SYSTEM),yy)

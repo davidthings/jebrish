@@ -83,7 +83,7 @@ HOST_GCC_COMMON_CONF_OPTS = \
 	--with-mpc=$(HOST_DIR) \
 	--with-mpfr=$(HOST_DIR) \
 	--with-pkgversion="Buildroot $(BR2_VERSION_FULL)" \
-	--with-bugurl="http://bugs.buildroot.net/" \
+	--with-bugurl="https://gitlab.com/buildroot.org/buildroot/-/issues" \
 	--without-zstd
 
 ifeq ($(BR2_REPRODUCIBLE),y)
@@ -291,6 +291,11 @@ endif
 ifeq ($(BR2_s390x),y)
 HOST_GCC_COMMON_CONF_OPTS += \
 	--with-long-double-128
+endif
+
+# allow to build gcc 14.x
+ifeq ($(BR2_nios2),y)
+HOST_GCC_COMMON_CONF_OPTS += --enable-obsolete
 endif
 
 HOST_GCC_COMMON_TOOLCHAIN_WRAPPER_ARGS += -DBR_CROSS_PATH_SUFFIX='".br_real"'

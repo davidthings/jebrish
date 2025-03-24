@@ -19,7 +19,7 @@
 # - Diff sysusers.d with the previous version
 # - Diff factory/etc/nsswitch.conf with the previous version
 #   (details are often sprinkled around in README and manpages)
-SYSTEMD_VERSION = 254.9
+SYSTEMD_VERSION = 254.13
 SYSTEMD_SITE = $(call github,systemd,systemd-stable,v$(SYSTEMD_VERSION))
 SYSTEMD_LICENSE = \
 	LGPL-2.1+, \
@@ -55,6 +55,7 @@ SYSTEMD_DEPENDENCIES = \
 	host-python-jinja2 \
 	kmod \
 	libcap \
+	libxcrypt \
 	util-linux-libs \
 	$(TARGET_NLS_DEPENDENCIES)
 
@@ -576,6 +577,13 @@ else
 SYSTEMD_CONF_OPTS += -Dhibernate=false
 endif
 
+ifeq ($(BR2_PACKAGE_TPM2_TSS),y)
+SYSTEMD_DEPENDENCIES += tpm2-tss
+SYSTEMD_CONF_OPTS += -Dtpm2=true
+else
+SYSTEMD_CONF_OPTS += -Dtpm2=false
+endif
+
 ifeq ($(BR2_PACKAGE_SYSTEMD_BOOT),y)
 SYSTEMD_INSTALL_IMAGES = YES
 SYSTEMD_DEPENDENCIES += gnu-efi host-python-pyelftools
@@ -882,6 +890,7 @@ HOST_SYSTEMD_DEPENDENCIES = \
 	host-util-linux \
 	host-patchelf \
 	host-libcap \
+	host-libxcrypt \
 	host-gperf \
 	host-python-jinja2
 

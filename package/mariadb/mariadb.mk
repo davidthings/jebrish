@@ -13,7 +13,6 @@ MARIADB_LICENSE_FILES = README.md COPYING
 MARIADB_CPE_ID_VENDOR = mariadb
 MARIADB_SELINUX_MODULES = mysql
 MARIADB_INSTALL_STAGING = YES
-MARIADB_PROVIDES = mysql
 MARIADB_CONFIG_SCRIPTS = mysql_config
 
 MARIADB_DEPENDENCIES = \
@@ -27,7 +26,7 @@ MARIADB_DEPENDENCIES = \
 	libxml2
 
 MARIADB_CONF_OPTS += \
-	-DWITH_FMT=system \
+	-DWITH_LIBFMT=system \
 	-DWITH_PCRE=system
 
 # use bundled GPL-2.0+ licensed readline as package/readline is GPL-3.0+
