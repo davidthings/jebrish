@@ -4,18 +4,19 @@
 #
 ################################################################################
 
+IMX_GPU_VIV_REVISION = accdd64
 ifeq ($(BR2_aarch64),y)
-IMX_GPU_VIV_VERSION = 6.4.11.p1.2-aarch64-1e0c396
+IMX_GPU_VIV_VERSION = 6.4.11.p2.10-aarch64
 else
-IMX_GPU_VIV_VERSION = 6.4.11.p1.2-aarch32-1e0c396
+IMX_GPU_VIV_VERSION = 6.4.11.p2.10-aarch32
 endif
 IMX_GPU_VIV_SITE = $(FREESCALE_IMX_SITE)
-IMX_GPU_VIV_SOURCE = imx-gpu-viv-$(IMX_GPU_VIV_VERSION).bin
+IMX_GPU_VIV_SOURCE = imx-gpu-viv-$(IMX_GPU_VIV_VERSION)-$(IMX_GPU_VIV_REVISION).bin
 
 IMX_GPU_VIV_INSTALL_STAGING = YES
 
 IMX_GPU_VIV_LICENSE = NXP Semiconductor Software License Agreement
-IMX_GPU_VIV_LICENSE_FILES = EULA COPYING
+IMX_GPU_VIV_LICENSE_FILES = EULA COPYING SCR-imx-gpu-viv.txt
 IMX_GPU_VIV_REDISTRIBUTE = NO
 
 IMX_GPU_VIV_PROVIDES = libegl libgles libopencl libopenvg

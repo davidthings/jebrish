@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-NFS_UTILS_VERSION = 2.6.4
+NFS_UTILS_VERSION = 2.8.2
 NFS_UTILS_SOURCE = nfs-utils-$(NFS_UTILS_VERSION).tar.xz
 NFS_UTILS_SITE = https://www.kernel.org/pub/linux/utils/nfs-utils/$(NFS_UTILS_VERSION)
 NFS_UTILS_LICENSE = GPL-2.0+
@@ -17,6 +17,8 @@ NFS_UTILS_CONF_ENV = knfsd_cv_bsd_signals=no
 NFS_UTILS_CONF_OPTS = \
 	--enable-tirpc \
 	--enable-ipv6 \
+	--disable-junction \
+	--disable-nfsdctl \
 	--without-tcp-wrappers \
 	--with-statedir=/run/nfs \
 	--with-rpcgen=$(HOST_DIR)/bin/rpcgen
@@ -30,6 +32,8 @@ HOST_NFS_UTILS_CONF_OPTS = \
 	--disable-gss \
 	--disable-uuid \
 	--disable-ipv6 \
+	--disable-junction \
+	--disable-nfsdctl \
 	--without-tcp-wrappers \
 	--with-statedir=/run/nfs \
 	--disable-caps \
@@ -79,7 +83,7 @@ NFS_UTILS_POST_INSTALL_TARGET_HOOKS += NFS_UTILS_INSTALL_FIXUP
 
 ifeq ($(BR2_INIT_SYSTEMD),y)
 NFS_UTILS_CONF_OPTS += --with-systemd=/usr/lib/systemd/system
-NFS_UTILS_DEPENDENCIES += systemd
+NFS_UTILS_DEPENDENCIES += systemd host-systemd
 else
 NFS_UTILS_CONF_OPTS += --without-systemd
 endif

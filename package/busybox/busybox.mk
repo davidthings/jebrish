@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-BUSYBOX_VERSION = 1.36.1
+BUSYBOX_VERSION = 1.37.0
 BUSYBOX_SITE = https://www.busybox.net/downloads
 BUSYBOX_SOURCE = busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_LICENSE = GPL-2.0, bzip2-1.0.4
@@ -14,6 +14,16 @@ BUSYBOX_CPE_ID_VENDOR = busybox
 # 0003-libbb-sockaddr2str-ensure-only-printable-characters-.patch
 # 0004-nslookup-sanitize-all-printed-strings-with-printable.patch
 BUSYBOX_IGNORE_CVES += CVE-2022-28391
+
+# 0012-awk-fix-use-after-free-CVE-2023-42363.patch
+BUSYBOX_IGNORE_CVES += CVE-2023-42363
+
+# 0013-awk-fix-precedence-of-relative-to.patch
+# 0014-awk-fix-ternary-operator-and-precedence-of.patch
+BUSYBOX_IGNORE_CVES += CVE-2023-42364 CVE-2023-42365
+
+# 0015-awk.c-fix-CVE-2023-42366-bug-15874.patch
+BUSYBOX_IGNORE_CVES += CVE-2023-42366
 
 BUSYBOX_CFLAGS = \
 	$(TARGET_CFLAGS)
@@ -68,6 +78,7 @@ BUSYBOX_DEPENDENCIES = \
 	$(if $(BR2_PACKAGE_UNZIP),unzip) \
 	$(if $(BR2_PACKAGE_USBUTILS),usbutils) \
 	$(if $(BR2_PACKAGE_UTIL_LINUX),util-linux) \
+	$(if $(BR2_PACKAGE_TINYINIT),tinyinit) \
 	$(if $(BR2_PACKAGE_VIM),vim) \
 	$(if $(BR2_PACKAGE_WATCHDOG),watchdog) \
 	$(if $(BR2_PACKAGE_WGET),wget) \
@@ -162,6 +173,10 @@ define BUSYBOX_SET_MDEV
 	$(call KCONFIG_ENABLE_OPT,CONFIG_FEATURE_MDEV_EXEC)
 	$(call KCONFIG_ENABLE_OPT,CONFIG_FEATURE_MDEV_LOAD_FIRMWARE)
 endef
+endif
+
+ifeq ($(BR2_PACKAGE_LIBXCRYPT),y)
+BUSYBOX_DEPENDENCIES += libxcrypt
 endif
 
 # sha passwords need USE_BB_CRYPT_SHA
@@ -312,6 +327,29 @@ define BUSYBOX_INSTALL_SYSCTL_SCRIPT
 endef
 endif
 
+# Only install our crond script if no other package does it.
+ifeq ($(BR2_PACKAGE_DCRON),)
+define BUSYBOX_INSTALL_CROND_SCRIPT
+	if grep -q CONFIG_CROND=y $(@D)/.config; \
+	then \
+		mkdir -p $(TARGET_DIR)/etc/cron/crontabs ; \
+		$(INSTALL) -m 0755 -D package/busybox/S50crond \
+			$(TARGET_DIR)/etc/init.d/S50crond; \
+	fi;
+endef
+endif
+
+# Only install our ifplugd script if no other package does it.
+ifeq ($(BR2_PACKAGE_IFPLUGD),)
+define BUSYBOX_INSTALL_IFPLUGD_SCRIPT
+	if grep -q CONFIG_IFPLUGD=y $(@D)/.config; \
+	then \
+		$(INSTALL) -m 0755 -D package/busybox/S41ifplugd \
+			$(TARGET_DIR)/etc/init.d/S41ifplugd; \
+	fi;
+endef
+endif
+
 ifeq ($(BR2_INIT_BUSYBOX),y)
 define BUSYBOX_INSTALL_INITTAB
 	if test ! -e $(TARGET_DIR)/etc/inittab; then \
@@ -372,6 +410,13 @@ define BUSYBOX_INSTALL_ADD_TO_SHELLS
 endef
 BUSYBOX_TARGET_FINALIZE_HOOKS += BUSYBOX_INSTALL_ADD_TO_SHELLS
 
+ifeq ($(BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_11),)
+# IFLA_CAN_TERMINATION was introduced in Linux 4.11
+define BUSYBOX_DISABLE_IP_LINK_CAN
+	$(call KCONFIG_DISABLE_OPT,CONFIG_FEATURE_IP_LINK_CAN)
+endef
+endif
+
 define BUSYBOX_KCONFIG_FIXUP_CMDS
 	$(BUSYBOX_MUSL_DISABLE_SHA_HWACCEL)
 	$(BUSYBOX_SET_MMU)
@@ -384,6 +429,8 @@ define BUSYBOX_KCONFIG_FIXUP_CMDS
 	$(BUSYBOX_SET_SELINUX)
 	$(BUSYBOX_SET_LESS_FLAGS)
 	$(BUSYBOX_SET_INDIVIDUAL_BINARIES)
+	$(BUSYBOX_DISABLE_IP_LINK_CAN)
+	$(PACKAGES_BUSYBOX_CONFIG_FIXUPS)
 endef
 
 define BUSYBOX_BUILD_CMDS
@@ -407,6 +454,8 @@ define BUSYBOX_INSTALL_INIT_OPENRC
 	$(BUSYBOX_INSTALL_MDEV_SCRIPT)
 	$(BUSYBOX_INSTALL_LOGGING_SCRIPT)
 	$(BUSYBOX_INSTALL_WATCHDOG_SCRIPT)
+	$(BUSYBOX_INSTALL_IFPLUGD_SCRIPT)
+	$(BUSYBOX_INSTALL_CROND_SCRIPT)
 	$(BUSYBOX_INSTALL_TELNET_SCRIPT)
 endef
 
@@ -419,6 +468,8 @@ define BUSYBOX_INSTALL_INIT_SYSV
 	$(BUSYBOX_INSTALL_LOGGING_SCRIPT)
 	$(BUSYBOX_INSTALL_WATCHDOG_SCRIPT)
 	$(BUSYBOX_INSTALL_SYSCTL_SCRIPT)
+	$(BUSYBOX_INSTALL_IFPLUGD_SCRIPT)
+	$(BUSYBOX_INSTALL_CROND_SCRIPT)
 	$(BUSYBOX_INSTALL_TELNET_SCRIPT)
 endef
 

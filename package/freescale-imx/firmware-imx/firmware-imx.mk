@@ -4,9 +4,10 @@
 #
 ################################################################################
 
-FIRMWARE_IMX_VERSION = 8.20
+FIRMWARE_IMX_VERSION = 8.26
+FIRMWARE_IMX_REVISION = d4c33ab
 FIRMWARE_IMX_SITE = $(FREESCALE_IMX_SITE)
-FIRMWARE_IMX_SOURCE = firmware-imx-$(FIRMWARE_IMX_VERSION).bin
+FIRMWARE_IMX_SOURCE = firmware-imx-$(FIRMWARE_IMX_VERSION)-$(FIRMWARE_IMX_REVISION).bin
 
 FIRMWARE_IMX_LICENSE = NXP Semiconductor Software License Agreement
 FIRMWARE_IMX_LICENSE_FILES = EULA COPYING SCR.txt

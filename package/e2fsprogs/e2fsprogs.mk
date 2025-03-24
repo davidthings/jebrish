@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-E2FSPROGS_VERSION = 1.47.0
+E2FSPROGS_VERSION = 1.47.2
 E2FSPROGS_SOURCE = e2fsprogs-$(E2FSPROGS_VERSION).tar.xz
 E2FSPROGS_SITE = $(BR2_KERNEL_MIRROR)/linux/kernel/people/tytso/e2fsprogs/v$(E2FSPROGS_VERSION)
 E2FSPROGS_LICENSE = GPL-2.0, MIT-like with advertising clause (libss and libet)
@@ -61,10 +61,6 @@ E2FSPROGS_CONF_OPTS += --enable-fuse2fs
 E2FSPROGS_DEPENDENCIES += libfuse
 else
 E2FSPROGS_CONF_OPTS += --disable-fuse2fs
-endif
-
-ifeq ($(BR2_nios2),y)
-E2FSPROGS_CONF_ENV += ac_cv_func_fallocate=no
 endif
 
 # workaround gcc bug 111001

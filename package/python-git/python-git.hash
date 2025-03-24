@@ -1,5 +1,5 @@
 # md5, sha256 from https://pypi.org/pypi/gitpython/json
-md5  db4f2a27c8abc4a7e25504e3aeab4a84  GitPython-3.1.40.tar.gz
-sha256  22b126e9ffb671fdd0c129796343a02bf67bf2994b35449ffc9321aa755e18a4  GitPython-3.1.40.tar.gz
+md5  14e2083b71e235ba4d81fa485ce9153d  gitpython-3.1.44.tar.gz
+sha256  c87e30b26253bf5418b01b0660f818967f3c503193838337fe5e573331249269  gitpython-3.1.44.tar.gz
 # Locally computed sha256 checksums
 sha256  86fc94c321a9afbc11514713511bafded225f25100dcc0f7350e82bc231b8beb  LICENSE

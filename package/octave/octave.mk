@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-OCTAVE_VERSION = 9.2.0
-OCTAVE_SITE = https://ftp.gnu.org/gnu/octave
+OCTAVE_VERSION = 9.3.0
+OCTAVE_SITE = $(BR2_GNU_MIRROR)/octave
 OCTAVE_SOURCE = octave-$(OCTAVE_VERSION).tar.lz
 OCTAVE_LICENSE = GPL-3.0+
 OCTAVE_LICENSE_FILES = COPYING
@@ -41,6 +41,20 @@ OCTAVE_CONF_OPTS += --with-curl
 OCTAVE_DEPENDENCIES += libcurl
 else
 OCTAVE_CONF_OPTS += --without-curl
+endif
+
+ifeq ($(BR2_PACKAGE_LIBSNDFILE),y)
+OCTAVE_CONF_OPTS += --with-sndfile
+OCTAVE_DEPENDENCIES += libsndfile
+else
+OCTAVE_CONF_OPTS += --without-sndfile
+endif
+
+ifeq ($(BR2_PACKAGE_OPENSSL),y)
+OCTAVE_CONF_OPTS += --with-openssl=yes
+OCTAVE_DEPENDENCIES += openssl
+else
+OCTAVE_CONF_OPTS += --without-openssl
 endif
 
 ifeq ($(BR2_PACKAGE_READLINE),y)

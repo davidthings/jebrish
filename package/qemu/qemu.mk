@@ -6,7 +6,7 @@
 
 # When updating the version, check whether the list of supported targets
 # needs to be updated.
-QEMU_VERSION = 9.0.0
+QEMU_VERSION = 9.2.0
 QEMU_SOURCE = qemu-$(QEMU_VERSION).tar.xz
 QEMU_SITE = https://download.qemu.org
 QEMU_SELINUX_MODULES = qemu virt
@@ -16,12 +16,6 @@ QEMU_LICENSE_FILES = COPYING COPYING.LIB
 #       the non-(L)GPL license texts are specified in the affected
 #       individual source files.
 QEMU_CPE_ID_VENDOR = qemu
-
-# Need to ignore the following CVEs because the CPE database does
-# not have an entry for the 8.1.1 version yet.
-QEMU_IGNORE_CVES += CVE-2023-4135
-QEMU_IGNORE_CVES += CVE-2023-3354
-QEMU_IGNORE_CVES += CVE-2023-3180
 
 #-------------------------------------------------------------
 
@@ -69,7 +63,6 @@ QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPS) += mips-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPS64) += mips64-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPS64EL) += mips64el-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPSEL) += mipsel-softmmu
-QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_NIOS2) += nios2-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_OR1K) += or1k-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_PPC) += ppc-softmmu
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_PPC64) += ppc64-softmmu
@@ -110,7 +103,6 @@ QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPS64EL) += mips64el-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPSEL) += mipsel-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPSN32) += mipsn32-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_MIPSN32EL) += mipsn32el-linux-user
-QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_NIOS2) += nios2-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_OR1K) += or1k-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_PPC) += ppc-linux-user
 QEMU_TARGET_LIST_$(BR2_PACKAGE_QEMU_TARGET_PPC64) += ppc64-linux-user
@@ -296,6 +288,7 @@ define QEMU_CONFIGURE_CMDS
 			--python=$(HOST_DIR)/bin/python3 \
 			--ninja=$(HOST_DIR)/bin/ninja \
 			--disable-alsa \
+			--disable-asan \
 			--disable-bpf \
 			--disable-brlapi \
 			--disable-bsd-user \
@@ -322,10 +315,10 @@ define QEMU_CONFIGURE_CMDS
 			--disable-pa \
 			--disable-plugins \
 			--disable-rbd \
-			--disable-sanitizers \
 			--disable-selinux \
 			--disable-sparse \
 			--disable-strip \
+			--disable-ubsan \
 			--disable-vde \
 			--disable-vhost-crypto \
 			--disable-vhost-user-blk-server \
@@ -379,7 +372,6 @@ HOST_QEMU_DEPENDENCIES = \
 #       mipsel          mipsel
 #       mips64          mips64
 #       mips64el        mips64el
-#       nios2           nios2
 #       or1k            or1k
 #       powerpc         ppc
 #       powerpc64       ppc64
