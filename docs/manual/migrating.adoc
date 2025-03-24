@@ -62,7 +62,7 @@ $ echo 'name: NAME_OF_YOUR_TREE' >external.desc
 Be careful when choosing a name: It has to be unique and be made
 with only ASCII characters from the set +[A-Za-z0-9_]+.
 
- * Then, change every occurence of +BR2_EXTERNAL+ in your br2-external
+ * Then, change every occurrence of +BR2_EXTERNAL+ in your br2-external
    tree with the new variable:
 +
 ----
@@ -143,7 +143,7 @@ The download backends have been extended in various ways.
   fields (`devmajor` and `devminor`), which has an impact in the metadata
   stored in the archives (but the content of files is not affected).
 
-To accomodate those changes, the archive suffix has been updated or
+To accommodate those changes, the archive suffix has been updated or
 added:
 
 * for git: +-git4+
@@ -184,3 +184,28 @@ sed -r -i -e 's/(\.tar\.gz)$/-cargo2\1/' $(
 
 Note that the hash _will_ have changed, so that needs to be updated
 (manually) as well.
+
+[[migrating-mender]]
+=== Migrating to 2025.02
+
+Mender now requires a special bootstrap artifact to be placed in
++/var/lib/mender+. This replaces the +artifact_info+ file. Just like a
+normal artifact, the bootstrap artifact is generated with
+host-mender-artifact. See +board/mender/x86_64/post-image-efi.sh+ for an
+example of how to generate the bootstrap.mender file. See 
+https://docs.mender.io/release-information/release-notes-changelog/mender-client#mender-3-5-0-1[the
+release notes], under features, for more information.
+
+[[migrating-resolv.conf]]
+=== Migrating to 2025.05
+
+In 2025.05, for SYS-V-like systems (busybox, sysvinit, openrc), the
+`/etc/resolv.conf` symlink was changed to point to `/run/resolv.conf`,
+rather than the legacy location in `/tmp`. Users of a custom `fstab`
+will need to ensure that `/run` is writable before resolv.conf is
+created (usually by a DHCP client), either with an entry for `/run`,
+or with a startup script.
+
+Note that systems using systemd are not impacted: systemd always ensures
+that `/run` is writable. Systems further using systemd-resolved already
+had a `/etc/resolv.conf` that pointed into `/run` anyway.

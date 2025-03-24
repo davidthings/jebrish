@@ -24,8 +24,8 @@ MINIMAL_CONFIG = \
 
 class BRConfigTest(unittest.TestCase):
     """Test up to the configure stage."""
-    config = None
-    br2_external = list()
+    config: str
+    br2_external: list[str] = list()
     downloaddir = None
     outputdir = None
     logtofile = True
@@ -37,6 +37,7 @@ class BRConfigTest(unittest.TestCase):
         super(BRConfigTest, self).__init__(names)
         self.testname = self.__class__.__name__
         self.builddir = self.outputdir and os.path.join(self.outputdir, self.testname)
+        self.config += '\nBR2_BACKUP_SITE=""\n'
         self.config += '\nBR2_DL_DIR="{}"\n'.format(self.downloaddir)
         self.config += "\nBR2_JLEVEL={}\n".format(self.jlevel)
 

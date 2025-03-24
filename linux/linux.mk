@@ -86,7 +86,7 @@ LINUX_DEPENDENCIES += \
 	$(if $(BR2_PACKAGE_FIRMWARE_IMX),firmware-imx) \
 	$(if $(BR2_PACKAGE_WIRELESS_REGDB),wireless-regdb)
 
-# Starting with 4.16, the generated kconfig paser code is no longer
+# Starting with 4.16, the generated kconfig parser code is no longer
 # shipped with the kernel sources, so we need flex and bison, but
 # only if the host does not have them.
 LINUX_KCONFIG_DEPENDENCIES = \
@@ -138,6 +138,10 @@ define LINUX_FIXUP_CONFIG_PAHOLE_CHECK
 endef
 endif
 
+ifeq ($(BR2_LINUX_KERNEL_NEEDS_HOST_PYTHON3),y)
+LINUX_DEPENDENCIES += $(BR2_PYTHON3_HOST_DEPENDENCY)
+endif
+
 # If host-uboot-tools is selected by the user, assume it is needed to
 # create a custom image
 ifeq ($(BR2_PACKAGE_HOST_UBOOT_TOOLS),y)
@@ -159,6 +163,7 @@ endif
 LINUX_MAKE_FLAGS = \
 	HOSTCC="$(HOSTCC) $(subst -I/,-isystem /,$(subst -I /,-isystem /,$(HOST_CFLAGS))) $(HOST_LDFLAGS)" \
 	ARCH=$(KERNEL_ARCH) \
+	KCFLAGS="$(LINUX_CFLAGS)" \
 	INSTALL_MOD_PATH=$(TARGET_DIR) \
 	CROSS_COMPILE="$(TARGET_CROSS)" \
 	WERROR=0 \
@@ -180,7 +185,12 @@ endif
 # sanitize the arguments passed from user space in registers.
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82435
 ifeq ($(BR2_TOOLCHAIN_GCC_AT_LEAST_8),y)
-LINUX_MAKE_ENV += KCFLAGS=-Wno-attribute-alias
+LINUX_CFLAGS += -Wno-attribute-alias
+endif
+
+# Disable FDPIC if enabled by default in toolchain
+ifeq ($(BR2_BINFMT_FDPIC),y)
+LINUX_CFLAGS += -mno-fdpic
 endif
 
 ifeq ($(BR2_LINUX_KERNEL_DTB_OVERLAY_SUPPORT),y)
@@ -193,14 +203,33 @@ endif
 LINUX_VERSION_PROBED = `MAKEFLAGS='$(filter-out w,$(MAKEFLAGS))' $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(LINUX_DIR) --no-print-directory -s kernelrelease 2>/dev/null`
 
 LINUX_DTS_NAME += $(call qstrip,$(BR2_LINUX_KERNEL_INTREE_DTS_NAME))
+LINUX_DTSO_NAMES += $(call qstrip,$(BR2_LINUX_KERNEL_INTREE_DTSO_NAMES))
 
 # We keep only the .dts files, so that the user can specify both .dts
 # and .dtsi files in BR2_LINUX_KERNEL_CUSTOM_DTS_PATH. Both will be
 # copied to arch/<arch>/boot/dts, but only the .dts files will
 # actually be generated as .dtb.
-LINUX_DTS_NAME += $(basename $(filter %.dts,$(notdir $(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH)))))
+LINUX_CUSTOM_DTS_PATH = $(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH))
+LINUX_DTS_NAME += $(basename $(filter %.dts,$(notdir $(LINUX_CUSTOM_DTS_PATH))))
+LINUX_DTSO_NAMES += $(basename $(filter %.dtso,$(notdir $(LINUX_CUSTOM_DTS_PATH))))
 
-LINUX_DTBS = $(addsuffix .dtb,$(LINUX_DTS_NAME))
+LINUX_KERNEL_CUSTOM_DTS_DIR = $(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_DIR))
+ifneq ($(LINUX_KERNEL_CUSTOM_DTS_DIR),)
+# Use evaluation-during-assignment using := to avoid any re-evaluation
+# of LINUX_DTS_LIST when LINUX_DTS_NAME is used.
+LINUX_DTS_LIST := $(shell find $(LINUX_KERNEL_CUSTOM_DTS_DIR) -name '*.dts' -printf '%P\n' 2>/dev/null)
+LINUX_DTSO_LIST := $(shell find $(LINUX_KERNEL_CUSTOM_DTS_DIR) -name '*.dtso' -printf '%P\n' 2>/dev/null)
+LINUX_DTS_NAME += $(basename $(LINUX_DTS_LIST))
+LINUX_DTSO_NAMES += $(basename $(LINUX_DTSO_LIST))
+
+define LINUX_COPY_CUSTOM_DTS_FILES
+	$(foreach d, $(LINUX_KERNEL_CUSTOM_DTS_DIR), \
+		@$(call MESSAGE,"Copying devicetree overlay $(d)")$(sep) \
+		$(Q)$(call SYSTEM_RSYNC,$(d),$(LINUX_ARCH_PATH)/boot/dts/)$(sep))
+endef
+endif
+
+LINUX_DTBS = $(addsuffix .dtb,$(LINUX_DTS_NAME)) $(addsuffix .dtbo,$(LINUX_DTSO_NAMES))
 
 ifeq ($(BR2_LINUX_KERNEL_IMAGE_TARGET_CUSTOM),y)
 LINUX_IMAGE_NAME = $(call qstrip,$(BR2_LINUX_KERNEL_IMAGE_NAME))
@@ -333,6 +362,12 @@ LINUX_KCONFIG_DEFCONFIG = $(call qstrip,$(BR2_LINUX_KERNEL_DEFCONFIG))_defconfig
 else ifeq ($(BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG),y)
 ifeq ($(BR2_powerpc64le),y)
 LINUX_KCONFIG_DEFCONFIG = ppc64le_defconfig
+else ifeq ($(BR2_powerpc64),y)
+LINUX_KCONFIG_DEFCONFIG = ppc64_defconfig
+else ifeq ($(BR2_powerpc),y)
+LINUX_KCONFIG_DEFCONFIG = ppc_defconfig
+else ifeq ($(BR2_arc750d)$(BR2_arc770d),y)
+LINUX_KCONFIG_DEFCONFIG = axs101_defconfig
 else
 LINUX_KCONFIG_DEFCONFIG = defconfig
 endif
@@ -508,6 +543,7 @@ define LINUX_BUILD_CMDS
 	$(foreach dts,$(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH)), \
 		cp -f $(dts) $(LINUX_ARCH_PATH)/boot/dts/
 	)
+	$(LINUX_COPY_CUSTOM_DTS_FILES)
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) all
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) $(LINUX_TARGET_NAME)
 	$(LINUX_BUILD_DTB)
@@ -642,6 +678,10 @@ endif
 ifeq ($(BR2_LINUX_KERNEL_DTS_SUPPORT):$(strip $(LINUX_DTS_NAME)),y:)
 $(error No kernel device tree source specified, check your \
 	BR2_LINUX_KERNEL_INTREE_DTS_NAME / BR2_LINUX_KERNEL_CUSTOM_DTS_PATH settings)
+endif
+
+ifeq ($(BR2_LINUX_KERNEL_IMAGE_TARGET_CUSTOM):$(call qstrip,$(BR2_LINUX_KERNEL_IMAGE_TARGET_NAME)),y:)
+$(error No image name specified in BR2_LINUX_KERNEL_IMAGE_TARGET_NAME despite BR2_LINUX_KERNEL_IMAGE_TARGET_CUSTOM=y)
 endif
 
 endif # BR_BUILDING

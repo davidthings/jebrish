@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SDL2_VERSION = 2.30.3
+SDL2_VERSION = 2.32.2
 SDL2_SOURCE = SDL2-$(SDL2_VERSION).tar.gz
 SDL2_SITE = http://www.libsdl.org/release
 SDL2_LICENSE = Zlib
@@ -27,6 +27,7 @@ SDL2_CONF_OPTS += \
 	--disable-video-dummy \
 	--disable-video-offscreen \
 	--disable-video-vulkan \
+	--disable-video-directfb \
 	--disable-ime \
 	--disable-ibus \
 	--disable-fcitx \
@@ -75,14 +76,6 @@ ifeq ($(BR2_X86_CPU_HAS_3DNOW),y)
 SDL2_CONF_OPTS += --enable-3dnow
 else
 SDL2_CONF_OPTS += --disable-3dnow
-endif
-
-ifeq ($(BR2_PACKAGE_SDL2_DIRECTFB),y)
-SDL2_DEPENDENCIES += directfb
-SDL2_CONF_OPTS += --enable-video-directfb
-SDL2_CONF_ENV += ac_cv_path_DIRECTFBCONFIG=$(STAGING_DIR)/usr/bin/directfb-config
-else
-SDL2_CONF_OPTS += --disable-video-directfb
 endif
 
 ifeq ($(BR2_PACKAGE_SDL2_OPENGLES)$(BR2_PACKAGE_RPI_USERLAND),yy)

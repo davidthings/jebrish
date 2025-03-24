@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBXCRYPT_VERSION = 4.4.36
+LIBXCRYPT_VERSION = 4.4.38
 LIBXCRYPT_SITE = https://github.com/besser82/libxcrypt/releases/download/v$(LIBXCRYPT_VERSION)
 LIBXCRYPT_SOURCE = libxcrypt-$(LIBXCRYPT_VERSION).tar.xz
 LIBXCRYPT_LICENSE = LGPL-2.1+
@@ -15,7 +15,7 @@ LIBXCRYPT_INSTALL_STAGING = YES
 LIBXCRYPT_CONF_OPTS = --disable-werror
 HOST_LIBXCRYPT_CONF_OPTS = --disable-werror
 
-# Disable obsolete and unsecure API
+# Disable obsolete and insecure API
 LIBXCRYPT_CONF_OPTS += --disable-obsolete_api
 HOST_LIBXCRYPT_CONF_OPTS += --disable-obsolete_api
 

@@ -182,8 +182,14 @@ $(BUILD_DIR)/%/.stamp_downloaded:
 			break ; \
 		fi ; \
 	done
-	$(if $($(PKG)_MAIN_DOWNLOAD),$(call DOWNLOAD,$($(PKG)_MAIN_DOWNLOAD),$(PKG),$(patsubst %,-p '%',$($(PKG)_DOWNLOAD_POST_PROCESS))))
-	$(foreach p,$($(PKG)_ADDITIONAL_DOWNLOADS),$(call DOWNLOAD,$(p),$(PKG))$(sep))
+	$(if $($(PKG)_MAIN_DOWNLOAD), \
+		$(call DOWNLOAD, \
+			$($(PKG)_MAIN_DOWNLOAD), \
+			$(patsubst %,-p '%',$($(PKG)_DOWNLOAD_POST_PROCESS)) \
+			$(patsubst %,-P '%',$($(PKG)_DOWNLOAD_POST_PROCESS_OPTS)) \
+		) \
+	)
+	$(foreach p,$($(PKG)_ADDITIONAL_DOWNLOADS),$(call DOWNLOAD,$(p))$(sep))
 	$(foreach hook,$($(PKG)_POST_DOWNLOAD_HOOKS),$(call $(hook))$(sep))
 	$(Q)mkdir -p $(@D)
 	@$(call step_end,download)
@@ -192,7 +198,7 @@ $(BUILD_DIR)/%/.stamp_downloaded:
 # Retrieve actual source archive, e.g. for prebuilt external toolchains
 $(BUILD_DIR)/%/.stamp_actual_downloaded:
 	@$(call step_start,actual-download)
-	$(call DOWNLOAD,$($(PKG)_ACTUAL_SOURCE_SITE)/$($(PKG)_ACTUAL_SOURCE_TARBALL),$(PKG))
+	$(call DOWNLOAD,$($(PKG)_ACTUAL_SOURCE_SITE)/$($(PKG)_ACTUAL_SOURCE_TARBALL))
 	$(Q)mkdir -p $(@D)
 	@$(call step_end,actual-download)
 	$(Q)touch $@
@@ -225,29 +231,13 @@ $(BUILD_DIR)/%/.stamp_rsynced:
 	$(Q)touch $@
 
 # Patch
-#
-# The RAWNAME variable is the lowercased package name, which allows to
-# find the package directory (typically package/<pkgname>) and the
-# prefix of the patches
-#
-# For BR2_GLOBAL_PATCH_DIR, only generate if it is defined
-$(BUILD_DIR)/%/.stamp_patched: PATCH_BASE_DIRS =  $(PKGDIR)
-$(BUILD_DIR)/%/.stamp_patched: PATCH_BASE_DIRS += $(addsuffix /$(RAWNAME),$(call qstrip,$(BR2_GLOBAL_PATCH_DIR)))
 $(BUILD_DIR)/%/.stamp_patched:
 	@$(call step_start,patch)
 	@$(call MESSAGE,"Patching")
 	$(foreach hook,$($(PKG)_PRE_PATCH_HOOKS),$(call $(hook))$(sep))
 	$(foreach p,$($(PKG)_PATCH),$(APPLY_PATCHES) $(@D) $($(PKG)_DL_DIR) $(notdir $(p))$(sep))
-	$(Q)( \
-	for D in $(PATCH_BASE_DIRS); do \
-	  if test -d $${D}; then \
-	    if test -d $${D}/$($(PKG)_VERSION); then \
-	      $(APPLY_PATCHES) $(@D) $${D}/$($(PKG)_VERSION) \*.patch || exit 1; \
-	    else \
-	      $(APPLY_PATCHES) $(@D) $${D} \*.patch || exit 1; \
-	    fi; \
-	  fi; \
-	done; \
+	$(foreach dir,$(call pkg-patches-dirs,$(PKG)),\
+		$(Q)$(APPLY_PATCHES) $(@D) $(dir) \*.patch$(sep)\
 	)
 	$(foreach hook,$($(PKG)_POST_PATCH_HOOKS),$(call $(hook))$(sep))
 	@$(call step_end,patch)
@@ -276,7 +266,7 @@ $(BUILD_DIR)/%/.stamp_configured:
 	$(Q)touch $@
 
 # Build
-$(BUILD_DIR)/%/.stamp_built::
+$(BUILD_DIR)/%/.stamp_built:
 	@$(call step_start,build)
 	@$(call MESSAGE,"Building")
 	$(foreach hook,$($(PKG)_PRE_BUILD_HOOKS),$(call $(hook))$(sep))
@@ -511,7 +501,7 @@ $(2)_VERSION := $$(call sanitize,$$($(2)_DL_VERSION))
 
 $(2)_HASH_FILES = \
 	$$(strip \
-		$$(foreach d, $$($(2)_PKGDIR) $$(addsuffix /$$($(2)_RAWNAME), $$(call qstrip,$$(BR2_GLOBAL_PATCH_DIR))),\
+		$$(foreach d, $$(call pkg-patch-hash-dirs,$(2)),\
 			$$(if $$(wildcard $$(d)/$$($(2)_VERSION)/$$($(2)_RAWNAME).hash),\
 				$$(d)/$$($(2)_VERSION)/$$($(2)_RAWNAME).hash,\
 				$$(d)/$$($(2)_RAWNAME).hash\
@@ -761,6 +751,7 @@ endif # ifeq ($$($(2)_CPE_ID_VALID),YES)
 # Similarly for the skeleton.
 $(2)_ADD_TOOLCHAIN_DEPENDENCY	?= YES
 $(2)_ADD_SKELETON_DEPENDENCY	?= YES
+$(2)_ADD_CCACHE_DEPENDENCY	?= YES
 
 
 ifeq ($(4),target)
@@ -770,6 +761,10 @@ endif
 ifeq ($$($(2)_ADD_TOOLCHAIN_DEPENDENCY),YES)
 $(2)_DEPENDENCIES += toolchain
 endif
+endif
+
+ifeq ($$(BR2_CCACHE):$$($(2)_ADD_CCACHE_DEPENDENCY),y:YES)
+$(2)_DEPENDENCIES += host-ccache
 endif
 
 ifneq ($(1),host-skeleton)
@@ -790,12 +785,6 @@ ifeq ($$(filter host-tar host-skeleton host-xz host-lzip host-fakedate,$(1)),)
 $(2)_EXTRACT_DEPENDENCIES += \
 	$$(foreach dl,$$($(2)_ALL_DOWNLOADS),\
 		$$(call extractor-pkg-dependency,$$(notdir $$(dl))))
-endif
-
-ifeq ($$(BR2_CCACHE),y)
-ifeq ($$(filter host-tar host-skeleton host-xz host-lzip host-fakedate host-ccache host-cmake host-hiredis host-pkgconf host-zstd,$(1)),)
-$(2)_DEPENDENCIES += host-ccache
-endif
 endif
 
 ifeq ($$(BR2_REPRODUCIBLE),y)
@@ -873,7 +862,7 @@ $$(error "Package $(1) defines host variant before target variant!")
 endif
 endif
 
-# Globaly remove following conflicting and useless files
+# Globally remove following conflicting and useless files
 $(2)_DROP_FILES_OR_DIRS += /share/info/dir
 
 ifeq ($$($(2)_TYPE),host)
@@ -1003,6 +992,9 @@ $(1)-rsync:		$$($(2)_TARGET_RSYNC)
 
 $(1)-source:
 $(1)-legal-source:
+# For override, legal-info uses host-tar and host-gzip
+$(1)-legal-info: | $(BR2_GZIP_HOST_DEPENDENCY) $(BR2_TAR_HOST_DEPENDENCY)
+
 
 $(1)-external-deps:
 	@echo "file://$$($(2)_OVERRIDE_SRCDIR)"
@@ -1036,6 +1028,9 @@ $(1)-graph-depends: graph-depends-requirements
 
 $(1)-graph-rdepends: graph-depends-requirements
 	$(call pkg-graph-depends,$(1),--reverse)
+
+$(1)-graph-both-depends: graph-depends-requirements
+	$(call pkg-graph-depends,$(1),--direct --reverse)
 
 $(1)-all-source:	$(1)-source
 $(1)-all-source:	$$(foreach p,$$($(2)_FINAL_ALL_DEPENDENCIES),$$(p)-all-source)
@@ -1147,13 +1142,22 @@ else
 endif # license files
 
 ifeq ($$($(2)_REDISTRIBUTE),YES)
-ifeq ($$($(2)_SITE_METHOD),local)
-# Packages without a tarball: don't save and warn
-	@$$(call legal-warning-nosource,$$($(2)_RAWNAME),local)
-
-else ifneq ($$($(2)_OVERRIDE_SRCDIR),)
-	@$$(call legal-warning-nosource,$$($(2)_RAWNAME),override)
-
+ifneq ($$($(2)_OVERRIDE_SRCDIR),)
+# local/override packages: copy it and archive the copy
+	@echo "Package is of type local or override, archive sources"
+	$$(Q)rm -rf  $$($(2)_BUILDDIR)/.legal-info-rsync
+	$$(Q)mkdir -p  $$($(2)_BUILDDIR)/.legal-info-rsync
+	$$(Q)rsync -au --chmod=u=rwX,go=rX $$(RSYNC_VCS_EXCLUSIONS) \
+		$$(call qstrip,$$($(2)_OVERRIDE_SRCDIR))/ \
+		 $$($(2)_BUILDDIR)/.legal-info-rsync/
+	$$(call prepare-per-package-directory,$$(BR2_GZIP_HOST_DEPENDENCY) $$(BR2_TAR_HOST_DEPENDENCY))
+	$$(Q)mkdir -p $$($(2)_REDIST_SOURCES_DIR)
+	$$(Q). support/download/helpers; cd $$($(2)_BUILDDIR); TAR=$$(TAR) mk_tar_gz \
+		$$($(2)_BUILDDIR)/.legal-info-rsync/ \
+		$$($(2)_BASENAME_RAW) \
+		@0 \
+		$$($(2)_REDIST_SOURCES_DIR)/$$($(2)_BASENAME_RAW).tar.gz
+	$$(Q)rm -rf $$($(2)_BUILDDIR)/.legal-info-rsync
 else
 # Other packages
 
@@ -1173,7 +1177,7 @@ else
 endif # other packages
 
 endif # redistribute
-	@$$(call legal-manifest,$$(call UPPERCASE,$(4)),$$($(2)_RAWNAME),$$($(2)_VERSION),$$(subst $$(space)$$(comma),$$(comma),$$($(2)_LICENSE)),$$($(2)_MANIFEST_LICENSE_FILES),$$($(2)_ACTUAL_SOURCE_TARBALL),$$($(2)_ACTUAL_SOURCE_SITE),$$(call legal-deps,$(1)))
+	@$$(call legal-manifest,$$(call UPPERCASE,$(4)),$$($(2)_RAWNAME),$$($(2)_DL_VERSION),$$(subst $$(space)$$(comma),$$(comma),$$($(2)_LICENSE)),$$($(2)_MANIFEST_LICENSE_FILES),$$($(2)_ACTUAL_SOURCE_TARBALL),$$($(2)_ACTUAL_SOURCE_SITE),$$(call legal-deps,$(1)))
 endif # ifneq ($$(call qstrip,$$($(2)_SOURCE)),)
 	$$(foreach hook,$$($(2)_POST_LEGAL_INFO_HOOKS),$$(call $$(hook))$$(sep))
 
@@ -1222,6 +1226,9 @@ endif
 ifneq ($$($(2)_USERS),)
 PACKAGES_USERS += $$($(2)_USERS)$$(sep)
 endif
+ifneq ($$($(2)_BUSYBOX_CONFIG_FIXUPS),)
+PACKAGES_BUSYBOX_CONFIG_FIXUPS += $$($(2)_BUSYBOX_CONFIG_FIXUPS)$$(sep)
+endif
 ifneq ($$($(2)_LINUX_CONFIG_FIXUPS),)
 PACKAGES_LINUX_CONFIG_FIXUPS += $$($(2)_LINUX_CONFIG_FIXUPS)$$(sep)
 endif
@@ -1253,6 +1260,8 @@ else ifeq ($$($(2)_SITE_METHOD),hg)
 DL_TOOLS_DEPENDENCIES += hg
 else ifeq ($$($(2)_SITE_METHOD),cvs)
 DL_TOOLS_DEPENDENCIES += cvs
+else ifneq ($(filter ftp ftps,$$($(2)_SITE_METHOD)),)
+DL_TOOLS_DEPENDENCIES += curl
 endif # SITE_METHOD
 
 # cargo/go vendoring (may) need git

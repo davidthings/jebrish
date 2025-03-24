@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-QT5BASE_VERSION = da6e958319e95fe564d3b30c931492dd666bfaff
+QT5BASE_VERSION = 2b9835f5c9bcfe3105b60a8dd33c1db7d8611378
 QT5BASE_SITE = $(QT5_SITE)/qtbase
 QT5BASE_SITE_METHOD = git
 QT5BASE_CPE_ID_VENDOR = qt
@@ -40,7 +40,8 @@ QT5BASE_CONFIGURE_OPTS += \
 	-system-pcre \
 	-no-pch \
 	-shared \
-	-no-feature-relocatable
+	-no-feature-relocatable \
+	-no-directfb
 
 # starting from version 5.9.0, -optimize-debug is enabled by default
 # for debug builds and it overrides -O* with -Og which is not what we
@@ -173,8 +174,6 @@ QT5BASE_CONFIGURE_OPTS += $(if $(BR2_PACKAGE_QT5BASE_WIDGETS),-widgets,-no-widge
 # We have to use --enable-linuxfb, otherwise Qt thinks that -linuxfb
 # is to add a link against the "inuxfb" library.
 QT5BASE_CONFIGURE_OPTS += $(if $(BR2_PACKAGE_QT5BASE_LINUXFB),--enable-linuxfb,-no-linuxfb)
-QT5BASE_CONFIGURE_OPTS += $(if $(BR2_PACKAGE_QT5BASE_DIRECTFB),-directfb,-no-directfb)
-QT5BASE_DEPENDENCIES   += $(if $(BR2_PACKAGE_QT5BASE_DIRECTFB),directfb)
 
 ifeq ($(BR2_PACKAGE_LIBXKBCOMMON),y)
 QT5BASE_CONFIGURE_OPTS += -xkbcommon

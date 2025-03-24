@@ -134,7 +134,7 @@ static const struct str_len_s unsafe_paths[] = {
 	{ NULL, 0 },
 };
 
-/* Unsafe options are options that specify a potentialy unsafe path,
+/* Unsafe options are options that specify a potentially unsafe path,
  * that will be checked by check_unsafe_path(), below.
  */
 static const struct str_len_s unsafe_opts[] = {
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 	char *progpath = argv[0];
 	char *basename;
 	char *env_debug;
-	int ret, i, count = 0, debug = 0, found_shared = 0;
+	int ret, i, count = 0, debug = 0, found_shared = 0, found_nonoption = 0;
 
 	/* Debug the wrapper to see arguments it was called with.
 	 * If environment variable BR2_DEBUG_WRAPPER is:
@@ -310,6 +310,15 @@ int main(int argc, char **argv)
 		perror(__FILE__ ": overflow");
 		return 3;
 	}
+
+	/* any non-option (E.G. source / object files) arguments passed? */
+	for (i = 1; i < argc; i++) {
+		if (argv[i][0] != '-') {
+			found_nonoption = 1;
+			break;
+		}
+	}
+
 #ifdef BR_CCACHE
 	ret = snprintf(ccache_path, sizeof(ccache_path), "%s/bin/ccache", absbasedir);
 	if (ret >= sizeof(ccache_path)) {
@@ -331,8 +340,11 @@ int main(int argc, char **argv)
 	}
 
 	/* start with predefined args */
-	memcpy(cur, predef_args, sizeof(predef_args));
-	cur += sizeof(predef_args) / sizeof(predef_args[0]);
+	for (i = 0; i < sizeof(predef_args) / sizeof(predef_args[0]); i++) {
+		/* skip linker flags when we know we are not linking */
+		if (found_nonoption || strncmp(predef_args[i], "-Wl,", strlen("-Wl,")))
+			*cur++ = predef_args[i];
+	}
 
 #ifdef BR_FLOAT_ABI
 	/* add float abi if not overridden in args */
@@ -452,7 +464,7 @@ int main(int argc, char **argv)
 		    !strcmp(argv[i], "-D__UBOOT__"))
 			break;
 	}
-	if (i == argc) {
+	if (i == argc && found_nonoption) {
 		/* https://wiki.gentoo.org/wiki/Hardened/Toolchain#Mark_Read-Only_Appropriate_Sections */
 #ifdef BR2_RELRO_PARTIAL
 		*cur++ = "-Wl,-z,relro";

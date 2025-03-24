@@ -59,6 +59,7 @@ INFLATE.tbz  = $(BZCAT)
 INFLATE.tbz2 = $(BZCAT)
 INFLATE.tgz  = $(ZCAT)
 INFLATE.xz   = $(XZCAT)
+INFLATE.zst  = $(ZSTDCAT)
 INFLATE.tar  = cat
 # suitable-extractor(filename): returns extractor based on suffix
 suitable-extractor = $(INFLATE$(suffix $(1)))
@@ -66,6 +67,7 @@ suitable-extractor = $(INFLATE$(suffix $(1)))
 EXTRACTOR_PKG_DEPENDENCY.lzma = $(BR2_XZCAT_HOST_DEPENDENCY)
 EXTRACTOR_PKG_DEPENDENCY.xz   = $(BR2_XZCAT_HOST_DEPENDENCY)
 EXTRACTOR_PKG_DEPENDENCY.lz   = $(BR2_LZIP_HOST_DEPENDENCY)
+EXTRACTOR_PKG_DEPENDENCY.zst  = $(BR2_ZSTD_HOST_DEPENDENCY)
 
 # extractor-pkg-dependency(filename): returns a Buildroot package
 # dependency needed to extract file based on suffix
@@ -73,7 +75,7 @@ extractor-pkg-dependency = $(EXTRACTOR_PKG_DEPENDENCY$(suffix $(1)))
 
 # extractor-system-dependency(filename): returns the name of the tool
 # needed to extract 'filename', and is meant to be used with
-# DL_TOOLS_DEPENDENCIES, in order to check that the necesary tool is
+# DL_TOOLS_DEPENDENCIES, in order to check that the necessary tool is
 # provided by the system Buildroot runs on.
 #
 # $(firstword) is used here because the extractor can have arguments,
@@ -97,7 +99,7 @@ define yesno-to-bool
 endef
 
 # json-info -- return package or filesystem metadata formatted as an entry
-#              of a JSON dictionnary
+#              of a JSON dictionary
 # $(1): upper-case package or filesystem name
 define json-info
 	"$($(1)_NAME)": {
@@ -154,6 +156,24 @@ define _json-info-pkg
 	)
 endef
 
+# The RAWNAME variable is the lowercased package name, which allows to
+# find the package directory (typically package/<pkgname>) and the
+# prefix of the patches
+pkg-patch-hash-dirs = \
+	$($(1)_PKGDIR) $(addsuffix /$($(1)_RAWNAME),$(call qstrip,$(BR2_GLOBAL_PATCH_DIR)))
+
+pkg-patches-dirs = \
+	$(foreach dir, $(call pkg-patch-hash-dirs,$(1)),\
+		$(wildcard $(if $($(1)_VERSION),\
+			$(or $(wildcard $(dir)/$($(1)_VERSION)),$(dir)),\
+			$(dir))))
+
+pkg-patches-url = $(foreach patch,$($(1)_PATCH),\
+	$(if $(findstring ://,$(patch)),$(patch),\
+		$($(1)_SITE_METHOD)+$($(1)_SITE)/$(patch)))
+
+pkg-patches-list = $(foreach patchdir,$(call pkg-patches-dirs,$(1)),$(wildcard $(addsuffix /*.patch,$(patchdir)))) $(call pkg-patches-url,$(1))
+
 define _json-info-pkg-details
 	"version": $(call mk-json-str,$($(1)_DL_VERSION)),
 	"licenses": $(call mk-json-str,$($(1)_LICENSE)),
@@ -175,6 +195,13 @@ define _json-info-pkg-details
 			]
 		},
 	)
+	],
+	"patches": [
+		$(foreach patch, \
+			$(call pkg-patches-list,$(1)), \
+			$(call mk-json-str,$(patsubst $(CONFIG_DIR)/%,%,$(patch)))$(comma) \
+
+		)
 	],
 endef
 

@@ -4,11 +4,11 @@
 #
 ################################################################################
 
-PYTHON_AIOCOAP_VERSION = 0.4.7
+PYTHON_AIOCOAP_VERSION = 0.4.12
 PYTHON_AIOCOAP_SOURCE = aiocoap-$(PYTHON_AIOCOAP_VERSION).tar.gz
-PYTHON_AIOCOAP_SITE = https://files.pythonhosted.org/packages/de/14/843232b56c0f09b2ceddae3da37598d9109c4b1d9383b1ab72232018e9e8
+PYTHON_AIOCOAP_SITE = https://files.pythonhosted.org/packages/a2/16/a9167225339089b2c295cc37aa5a01f758d164c5cda591cc9d2976719196
 PYTHON_AIOCOAP_SETUP_TYPE = setuptools
-PYTHON_AIOCOAP_LICENSE = MIT
-PYTHON_AIOCOAP_LICENSE_FILES = doc/LICENSE.rst
+PYTHON_AIOCOAP_LICENSE = BSD-3-Clause, MIT
+PYTHON_AIOCOAP_LICENSE_FILES = doc/LICENSE.rst LICENSES/BSD-3-Clause.txt LICENSES/MIT.txt
 
 $(eval $(python-package))

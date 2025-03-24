@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GST1_PLUGINS_BAD_VERSION = 1.22.9
+GST1_PLUGINS_BAD_VERSION = 1.22.12
 GST1_PLUGINS_BAD_SOURCE = gst-plugins-bad-$(GST1_PLUGINS_BAD_VERSION).tar.xz
 GST1_PLUGINS_BAD_SITE = https://gstreamer.freedesktop.org/src/gst-plugins-bad
 GST1_PLUGINS_BAD_INSTALL_STAGING = YES
@@ -73,7 +73,8 @@ GST1_PLUGINS_BAD_CONF_OPTS += \
 	-Dmagicleap=disabled \
 	-Disac=disabled \
 	-Diqa=disabled \
-	-Dopencv=disabled
+	-Dopencv=disabled \
+	-Ddirectfb=disabled
 
 GST1_PLUGINS_BAD_DEPENDENCIES = gst1-plugins-base gstreamer1
 
@@ -545,13 +546,6 @@ ifeq ($(BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DECKLINK),y)
 GST1_PLUGINS_BAD_CONF_OPTS += -Ddecklink=enabled
 else
 GST1_PLUGINS_BAD_CONF_OPTS += -Ddecklink=disabled
-endif
-
-ifeq ($(BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DIRECTFB),y)
-GST1_PLUGINS_BAD_CONF_OPTS += -Ddirectfb=enabled
-GST1_PLUGINS_BAD_DEPENDENCIES += directfb
-else
-GST1_PLUGINS_BAD_CONF_OPTS += -Ddirectfb=disabled
 endif
 
 ifeq ($(BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DVB),y)
